@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПУЛЬС — Полная документация продукта</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#0d9488;--teal2:#0f766e;--teal-bg:#f0fdfa;--teal-border:#99f6e4;
+  --blue:#0891b2;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;
+  --red:#dc2626;--red-bg:#fef2f2;--red-border:#fecaca;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
+  --navy:#0f172a;--navy2:#1e293b;--navy3:#334155;
+  --slate:#475569;--gray:#94a3b8;--border:#e2e8f0;
+  --bg:#f8fafc;--card:#ffffff;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--navy);line-height:1.6;font-size:14px}
+a{color:var(--teal);text-decoration:none}
+
+/* Layout */
+.wrap{display:flex;min-height:100vh}
+.sidebar{width:220px;background:var(--navy);position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0;padding-bottom:2rem}
+.main{flex:1;padding:2rem 2.5rem;max-width:960px}
+
+/* Sidebar */
+.sb-logo{padding:1.5rem 1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo .name{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.sb-logo .sub{font-size:11px;color:#5eead4;margin-top:2px}
+.sb-section{padding:.75rem 0}
+.sb-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.08em;padding:0 1.25rem;margin-bottom:2px;text-transform:uppercase}
+.sb-link{display:block;padding:5px 1.25rem;font-size:12px;color:rgba(255,255,255,.55);border-left:2px solid transparent;transition:all .12s;cursor:pointer}
+.sb-link:hover{color:#fff;background:rgba(255,255,255,.05);border-left-color:var(--teal)}
+
+/* Cover */
+.cover{background:linear-gradient(135deg,#0a2e35 0%,#0f3d4a 50%,#1a2e35 100%);border-radius:12px;padding:2.5rem;margin-bottom:2.5rem;color:#fff}
+.cover-badge{display:inline-block;padding:3px 12px;background:rgba(13,148,136,.25);border:1px solid rgba(94,234,212,.4);border-radius:999px;font-size:11px;color:#5eead4;margin-bottom:1rem}
+.cover h1{font-size:42px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}
+.cover .tagline{font-size:15px;color:rgba(255,255,255,.55);margin-bottom:2rem}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:.875rem;text-align:center}
+.kpi-val{font-size:24px;font-weight:800;color:#5eead4}
+.kpi-lbl{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+
+/* Section */
+section{margin-bottom:3rem;scroll-margin-top:1.5rem}
+.sec-hdr{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:2px solid var(--teal)}
+.sec-num{width:30px;height:30px;background:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
+.sec-hdr h2{font-size:20px;font-weight:700}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:1rem}
+.card-title{font-size:12px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.card-val{font-size:22px;font-weight:800;margin-bottom:2px}
+.card-note{font-size:11px;color:var(--gray)}
+
+/* Pillars */
+.pillar{border-left:3px solid;border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin-bottom:10px}
+.p-teal{border-color:var(--teal);background:var(--teal-bg)}
+.p-blue{border-color:var(--blue);background:var(--blue-bg)}
+.p-amber{border-color:var(--amber);background:var(--amber-bg)}
+.p-red{border-color:var(--red);background:var(--red-bg)}
+.p-purple{border-color:var(--purple);background:var(--purple-bg)}
+.pillar-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.pillar-body{font-size:12px;color:var(--slate);line-height:1.5}
+
+/* Table */
+.tbl-wrap{overflow-x:auto;margin:1rem 0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--navy);color:#fff;padding:9px 12px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.03em}
+td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:nth-child(even) td{background:var(--bg)}
+.td-center{text-align:center}
+
+/* Badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+.b-teal{background:var(--teal-bg);color:var(--teal2)}
+.b-blue{background:var(--blue-bg);color:#0369a1}
+.b-amber{background:var(--amber-bg);color:#92400e}
+.b-red{background:var(--red-bg);color:#9f1239}
+.b-green{background:#f0fdf4;color:#166534}
+.b-gray{background:#f1f5f9;color:var(--slate)}
+.b-purple{background:var(--purple-bg);color:#5b21b6}
+
+/* User stories */
+.story{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--teal);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin-bottom:8px}
+.story-meta{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.story-id{font-size:11px;font-weight:700;color:var(--gray)}
+.story-text{font-size:13px;font-weight:600;margin-bottom:6px}
+.story-ac{font-size:12px;color:var(--slate);line-height:1.5}
+.story-ac strong{color:var(--navy2)}
+
+/* Architecture HTML blocks */
+.arch-layout{display:grid;grid-template-columns:170px 1fr 160px;gap:0;align-items:start;margin:1rem 0}
+.arch-col-label{font-size:10px;font-weight:700;color:var(--gray);letter-spacing:.06em;text-align:center;text-transform:uppercase;margin-bottom:8px}
+.arch-source{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin-bottom:6px;font-size:12px;display:flex;align-items:center;gap:6px}
+.arch-source-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.arch-platform{background:var(--navy);border-radius:10px;padding:1rem;margin:0 1rem}
+.arch-service-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.arch-service{border-radius:7px;padding:.75rem;font-size:12px}
+.arch-infra{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.625rem 1rem;font-size:12px;color:rgba(255,255,255,.7);text-align:center;margin-top:4px}
+.arch-consumer{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:7px 10px;margin-bottom:6px;font-size:12px;display:flex;align-items:center;gap:6px}
+.arch-arrow-col{display:flex;flex-direction:column;justify-content:center;align-items:center;padding-top:30px}
+.arch-arrow{color:var(--gray);font-size:18px}
+
+/* Journey steps */
+.journey-step{display:flex;gap:1rem;margin-bottom:1rem}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--teal);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-body{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.875rem 1.25rem}
+.step-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.step-desc{font-size:12px;color:var(--slate);line-height:1.5}
+.step-tags{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px}
+
+/* Revenue */
+.rev-item{display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
+.rev-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.rev-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.rev-desc{font-size:12px;color:var(--slate)}
+.rev-est{font-size:12px;font-weight:700;color:var(--teal);margin-top:4px}
+
+/* Bar chart */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.bar-lbl{font-size:12px;color:var(--slate);min-width:150px}
+.bar-track{flex:1;background:var(--border);border-radius:3px;height:18px;overflow:hidden}
+.bar-fill{height:100%;display:flex;align-items:center;padding-left:8px;font-size:11px;font-weight:700;color:#fff}
+.bar-val{font-size:12px;font-weight:700;min-width:60px;text-align:right}
+
+/* Phase cards */
+.phase{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:12px;border-left:4px solid}
+.phase-1{border-left-color:var(--teal)}
+.phase-2{border-left-color:var(--blue)}
+.phase-3{border-left-color:var(--purple)}
+.phase-head{display:flex;align-items:center;gap:10px;margin-bottom:.5rem;flex-wrap:wrap}
+.phase-title{font-size:15px;font-weight:700}
+.phase-items{margin-top:.75rem;display:flex;flex-direction:column;gap:4px}
+.phase-item{display:flex;gap:8px;font-size:12px;color:var(--slate);align-items:flex-start}
+.phase-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px}
+
+/* Callout */
+.callout{border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;border-left:3px solid;font-size:13px}
+.callout-info{background:var(--blue-bg);border-color:var(--blue);color:#1e3a5f}
+.callout-warn{background:var(--amber-bg);border-color:var(--amber);color:#78350f}
+.callout-success{background:#f0fdf4;border-color:#22c55e;color:#14532d}
+
+/* Print */
+@media print{.sidebar{display:none}.main{padding:1rem}}
+@media(max-width:768px){.sidebar{display:none}.kpi-grid{grid-template-columns:repeat(2,1fr)}.arch-layout{grid-template-columns:1fr}}
+
+/* Diagram */
+.diag{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem;overflow-x:auto}
+.diag svg{display:block;margin:0 auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-logo">
+    <div class="name">ПУЛЬС</div>
+    <div class="sub">Product Documentation v0.1</div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Обзор</div>
+    <a class="sb-link" href="#cover">Титул</a>
+    <a class="sb-link" href="#summary">Executive Summary</a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Рынок</div>
+    <a class="sb-link" href="#market">Анализ рынка</a>
+    <a class="sb-link" href="#competition">Конкуренты</a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Продукт</div>
+    <a class="sb-link" href="#concept">Концепция</a>
+    <a class="sb-link" href="#stories">User Stories</a>
+    <a class="sb-link" href="#journey">Путь пользователя</a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Архитектура</div>
+    <a class="sb-link" href="#uml">UML Use Case</a>
+    <a class="sb-link" href="#arch">Сервисная архитектура</a>
+    <a class="sb-link" href="#tech">Технический стек</a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Бизнес</div>
+    <a class="sb-link" href="#monetization">Монетизация</a>
+    <a class="sb-link" href="#financials">Финансы</a>
+    <a class="sb-link" href="#roadmap">Роадмап</a>
+    <a class="sb-link" href="#risks">Риски</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- COVER -->
+<div class="cover" id="cover">
+  <div class="cover-badge">Бизнес-документация · v0.1 · Апрель 2026</div>
+  <h1>ПУЛЬС</h1>
+  <div class="tagline">Единая медицинская книжка · ИИ-ассистент здоровья · Маркетплейс · Россия и СНГ</div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-val">270M+</div><div class="kpi-lbl">аудитория РФ + СНГ</div></div>
+    <div class="kpi"><div class="kpi-val">₽120B</div><div class="kpi-lbl">Digital Health рынок РФ</div></div>
+    <div class="kpi"><div class="kpi-val">3–4</div><div class="kpi-lbl">человека MVP-команда</div></div>
+    <div class="kpi"><div class="kpi-val">Q3 2026</div><div class="kpi-lbl">целевой запуск MVP</div></div>
+  </div>
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+<section id="summary">
+  <div class="sec-hdr"><div class="sec-num">01</div><h2>Executive Summary</h2></div>
+  <div class="card" style="margin-bottom:1rem">
+    <p style="font-size:14px;line-height:1.8;color:var(--navy2)">
+      <strong>ПУЛЬС</strong> — первая в России платформа, объединяющая персональное медицинское хранилище, ИИ-ассистента здоровья и маркетплейс медицинских услуг в одном продукте. Пациент видит всю хронологию своего здоровья, получает понятные объяснения анализов, одним QR-кодом открывает доступ любому врачу и сразу находит лучшие цены на лекарства и анализы рядом с домом.
+    </p>
+    <p style="font-size:14px;line-height:1.8;color:var(--navy2);margin-top:.75rem">
+      Текущие игроки (Яндекс.Здоровье, СберЗдоровье, ЕМИАС) решают только один аспект: запись к врачу ИЛИ агрегация лабораторий ИЛИ государственная карта. <strong>Никто не объединил всё это в одном пациент-ориентированном продукте.</strong> ПУЛЬС занимает эту незакрытую нишу.
+    </p>
+  </div>
+  <div class="card-grid">
+    <div class="card"><div class="card-title">Проблема</div><div style="font-size:13px;color:var(--slate)">Данные о здоровье разбросаны по десяткам клиник, приложений и бумажных карт. Ни пациент, ни врач не видят полную картину.</div></div>
+    <div class="card"><div class="card-title">Решение</div><div style="font-size:13px;color:var(--slate)">Единое хранилище + ИИ + маркетплейс. Пациент управляет своими данными. Врач получает полный контекст. Клиника монетизируется через платформу.</div></div>
+    <div class="card"><div class="card-title">Бизнес-модель</div><div style="font-size:13px;color:var(--slate)">Комиссия с маркетплейса (лекарства, анализы, запись к врачу) + B2B подписка + Premium B2C + обезличенные датасеты.</div></div>
+    <div class="card"><div class="card-title">Конкурентный ров</div><div style="font-size:13px;color:var(--slate)">Накопленные данные пациентов создают сетевой эффект. Чем больше данных — тем умнее ИИ, тем ценнее продукт для всех участников.</div></div>
+  </div>
+</section>
+
+<!-- MARKET ANALYSIS -->
+<section id="market">
+  <div class="sec-hdr"><div class="sec-num">02</div><h2>Анализ рынка</h2></div>
+
+  <div class="card-grid" style="margin-bottom:1.5rem">
+    <div class="card"><div class="card-title">Рынок здравоохранения РФ</div><div class="card-val" style="color:var(--teal)">₽6.8T</div><div class="card-note">~$75B · 2025</div></div>
+    <div class="card"><div class="card-title">Digital Health РФ</div><div class="card-val" style="color:var(--teal)">₽120B</div><div class="card-note">растёт 25–30% в год</div></div>
+    <div class="card"><div class="card-title">Медицинские приложения</div><div class="card-val" style="color:var(--teal)">₽12B</div><div class="card-note">+35% YoY · 2024</div></div>
+    <div class="card"><div class="card-title">СНГ (Казахстан, Беларусь, Узбекистан)</div><div class="card-val" style="color:var(--teal)">+40%</div><div class="card-note">доп. к объёму РФ</div></div>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:700;margin-bottom:1rem">TAM / SAM / SOM — Россия</h3>
+  <div class="diag" style="margin-bottom:1.5rem">
+    <div class="bar-row"><div class="bar-lbl">TAM — рынок мед. приложений</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--teal)">₽12B</div></div><div class="bar-val">₽12B</div></div>
+    <div class="bar-row"><div class="bar-lbl">SAM — агрегаторы + ИИ-здоровье</div><div class="bar-track"><div class="bar-fill" style="width:58%;background:var(--blue)">₽7B</div></div><div class="bar-val">₽7B</div></div>
+    <div class="bar-row"><div class="bar-lbl">SOM — цель на 3 года</div><div class="bar-track"><div class="bar-fill" style="width:8%;background:var(--amber)">₽1B</div></div><div class="bar-val">₽1B</div></div>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:700;margin-bottom:.75rem">Драйверы роста</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:1.5rem">
+    <div class="pillar p-teal"><div class="pillar-title" style="color:var(--teal2)">Импортозамещение</div><div class="pillar-body">После 2022 г. государство активно стимулирует российские ИТ-решения в здравоохранении</div></div>
+    <div class="pillar p-blue"><div class="pillar-title" style="color:var(--blue)">ЕГИСЗ и цифровизация</div><div class="pillar-body">Минздрав обязывает клиники переходить на электронный документооборот до 2027</div></div>
+    <div class="pillar p-amber"><div class="pillar-title" style="color:var(--amber)">Рост частной медицины</div><div class="pillar-body">Рынок ДМС +18% в 2024. Пациенты платных клиник хотят контролировать свои данные</div></div>
+    <div class="pillar p-purple"><div class="pillar-title" style="color:var(--purple)">Проникновение смартфонов</div><div class="pillar-body">87% россиян имеют смартфон. 35% ежедневно пользуются госуслугами</div></div>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:700;margin-bottom:.75rem">Целевые сегменты</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Сегмент</th><th>Размер</th><th>Боль</th><th>Готовность платить</th><th>Приоритет</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Пациенты 25–45 лет</strong></td><td>40M чел.</td><td>Нет единого места для хранения данных, сложно объяснить врачу историю</td><td>Freemium + ₽299/мес Premium</td><td><span class="badge b-red">Высокий</span></td></tr>
+        <tr><td><strong>Родители детей до 14 лет</strong></td><td>15M семей</td><td>Педиатрические данные в разных клиниках, сложно отслеживать прогресс</td><td>₽199/мес семейный план</td><td><span class="badge b-red">Высокий</span></td></tr>
+        <tr><td><strong>Хронические пациенты</strong></td><td>25M чел.</td><td>Постоянный мониторинг показателей, много врачей одновременно</td><td>₽499/мес расширенный</td><td><span class="badge b-amber">Средний</span></td></tr>
+        <tr><td><strong>Частные клиники (B2B)</strong></td><td>12K клиник</td><td>Нет удобного способа показать пациентам их данные и привязать к своей экосистеме</td><td>₽15K–50K/мес API</td><td><span class="badge b-amber">Средний</span></td></tr>
+        <tr><td><strong>Аптечные сети</strong></td><td>78K аптек</td><td>Нет цифрового канала для работы с назначениями врача</td><td>Комиссия 5–15%</td><td><span class="badge b-green">Рост</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- COMPETITION -->
+<section id="competition">
+  <div class="sec-hdr"><div class="sec-num">03</div><h2>Конкурентный анализ</h2></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Компания</th>
+          <th>Мед. карта</th>
+          <th>ИИ-анализ</th>
+          <th>Маркетплейс</th>
+          <th>QR-доступ</th>
+          <th>Регионы</th>
+          <th>Слабость</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:#f0fdf4">
+          <td><strong style="color:var(--teal)">ПУЛЬС (мы)</strong></td>
+          <td class="td-center"><span style="color:#22c55e">✓</span></td>
+          <td class="td-center"><span style="color:#22c55e">✓</span></td>
+          <td class="td-center"><span style="color:#22c55e">✓</span></td>
+          <td class="td-center"><span style="color:#22c55e">✓</span></td>
+          <td>РФ + СНГ</td>
+          <td>Стартап, нет трафика</td>
+        </tr>
+        <tr>
+          <td><strong>Яндекс.Здоровье</strong></td>
+          <td class="td-center"><span style="color:#f59e0b">~</span></td>
+          <td class="td-center"><span style="color:#22c55e">✓</span></td>
+          <td class="td-center"><span style="color:#22c55e">✓</span></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td>РФ</td>
+          <td>Не хранит данные пациента, только консультации</td>
+        </tr>
+        <tr>
+          <td><strong>СберЗдоровье</strong></td>
+          <td class="td-center"><span style="color:#f59e0b">~</span></td>
+          <td class="td-center"><span style="color:#f59e0b">~</span></td>
+          <td class="td-center"><span style="color:#22c55e">✓</span></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td>РФ</td>
+          <td>Только клиники Сбера, нет пациент-контроля</td>
+        </tr>
+        <tr>
+          <td><strong>ЕМИАС (Москва)</strong></td>
+          <td class="td-center"><span style="color:#22c55e">✓</span></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td>Москва</td>
+          <td>Только Москва, гос. система, нет маркетплейса</td>
+        </tr>
+        <tr>
+          <td><strong>DocDoc / Сберздоровье</strong></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td class="td-center"><span style="color:#22c55e">✓</span></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td>РФ</td>
+          <td>Только запись, нет данных пациента</td>
+        </tr>
+        <tr>
+          <td><strong>Helix / Invitro</strong></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td class="td-center"><span style="color:#f59e0b">~</span></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td>РФ</td>
+          <td>Только свои лаборатории, не агрегатор</td>
+        </tr>
+        <tr>
+          <td><strong>Apple Health</strong></td>
+          <td class="td-center"><span style="color:#22c55e">✓</span></td>
+          <td class="td-center"><span style="color:#f59e0b">~</span></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td class="td-center"><span style="color:#dc2626">✗</span></td>
+          <td>США/ЕС</td>
+          <td>Не работает с российскими клиниками и ЕГИСЗ</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout callout-success" style="margin-top:1rem">
+    <strong>Вывод:</strong> ни один игрок не предлагает комбинацию «пациент-контролируемое хранилище + ИИ-анализ + маркетплейс + QR-доступ» для российского рынка. Это и есть наша ниша.
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<section id="concept">
+  <div class="sec-hdr"><div class="sec-num">04</div><h2>Концепция продукта</h2></div>
+  <div class="pillar p-teal" style="margin-bottom:8px">
+    <div class="pillar-title" style="color:var(--teal2);font-size:15px">01 · Хранилище данных на всю жизнь</div>
+    <div class="pillar-body">Анализы, снимки, выписки, прививки, рецепты — всё с рождения в одном месте. Частные и государственные клиники, умные часы (Apple Health, Google Fit, Garmin), загрузка PDF/фото через OCR. Отдельные профили для каждого члена семьи.</div>
+  </div>
+  <div class="pillar p-blue" style="margin-bottom:8px">
+    <div class="pillar-title" style="color:var(--blue);font-size:15px">02 · ИИ-ассистент здоровья</div>
+    <div class="pillar-body">Переводит медицинский язык на простой. Отслеживает динамику ключевых показателей (гемоглобин, сахар, холестерин, ферритин). Напоминает когда записаться к врачу. Multi-model верификация: несколько ИИ перепроверяют ответ — снижение галлюцинаций. RAG на базе медицинских исследований.</div>
+  </div>
+  <div class="pillar p-amber" style="margin-bottom:8px">
+    <div class="pillar-title" style="color:var(--amber);font-size:15px">03 · QR-доступ для врача</div>
+    <div class="pillar-body">Пациент показывает QR-код — врач из любой клиники открывает полную историю в браузере без установки приложения. Режимы: временный (один визит), постоянный (лечащий врач), выборочный (только часть данных, например только анализы крови). Клиника покупает B2B-подписку для постоянного доступа.</div>
+  </div>
+  <div class="pillar p-red" style="margin-bottom:8px">
+    <div class="pillar-title" style="color:var(--red);font-size:15px">04 · Маркетплейс после приёма</div>
+    <div class="pillar-body">Выписка врача → лучшие цены на лекарства в ближайших аптеках. Назначены анализы → лаборатории рядом с ценами. Запись к следующему врачу по рейтингу и отзывам. Геолокация для поиска рядом.</div>
+  </div>
+  <div class="pillar p-purple" style="margin-bottom:8px">
+    <div class="pillar-title" style="color:var(--purple);font-size:15px">05 · Геймификация и удержание</div>
+    <div class="pillar-body">Счётчик «продления жизни»: прошёл 10K шагов → +5 дней к прогнозу. Выполнил назначения → бонус. Партнёрская программа: скидки в аптеках за активность. Приложение мотивирует открывать его ежедневно — это критично для retention.</div>
+  </div>
+</section>
+
+<!-- USER STORIES -->
+<section id="stories">
+  <div class="sec-hdr"><div class="sec-num">05</div><h2>User Stories</h2></div>
+  <p style="font-size:13px;color:var(--slate);margin-bottom:1rem">Формат: <em>Как [роль], я хочу [действие], чтобы [ценность].</em> Приоритет по MoSCoW.</p>
+
+  <h3 style="font-size:14px;font-weight:700;color:var(--slate);margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.04em">Пациент (B2C)</h3>
+
+  <div class="story">
+    <div class="story-meta"><span class="story-id">US-001</span><span class="badge b-red">Must Have</span><span class="badge b-teal">Хранилище</span></div>
+    <div class="story-text">Как пациент, я хочу видеть все свои анализы в хронологическом порядке, чтобы отслеживать динамику показателей здоровья.</div>
+    <div class="story-ac"><strong>Критерии приёмки:</strong> список анализов с датой и источником; фильтрация по типу (кровь, мочи, гормоны); график динамики ключевых показателей; цветовая индикация отклонений от нормы.</div>
+  </div>
+
+  <div class="story">
+    <div class="story-meta"><span class="story-id">US-002</span><span class="badge b-red">Must Have</span><span class="badge b-teal">Хранилище</span></div>
+    <div class="story-text">Как пациент, я хочу загрузить PDF или фото результата анализа, чтобы он хранился в единой системе и был структурирован.</div>
+    <div class="story-ac"><strong>Критерии приёмки:</strong> OCR распознаёт бланк; извлекает числовые показатели и единицы измерения; привязывает к дате; показывает источник «загружено вручную».</div>
+  </div>
+
+  <div class="story">
+    <div class="story-meta"><span class="story-id">US-003</span><span class="badge b-red">Must Have</span><span class="badge b-blue">ИИ</span></div>
+    <div class="story-text">Как пациент, я хочу получить объяснение результата анализа простым языком, чтобы понять что делать дальше.</div>
+    <div class="story-ac"><strong>Критерии приёмки:</strong> ИИ объясняет каждый показатель с отклонением; указывает нормальный диапазон; даёт рекомендацию («стоит обсудить с терапевтом»); не ставит диагноз; содержит disclaimer.</div>
+  </div>
+
+  <div class="story">
+    <div class="story-meta"><span class="story-id">US-004</span><span class="badge b-red">Must Have</span><span class="badge b-amber">Доступ</span></div>
+    <div class="story-text">Как пациент, я хочу показать QR-код врачу для быстрого доступа к моей карте, чтобы не пересказывать историю болезни устно.</div>
+    <div class="story-ac"><strong>Критерии приёмки:</strong> QR генерируется в 1 клик; врач открывает в браузере без регистрации; отображается полная история; доступ истекает через заданное время (1ч / 24ч / постоянный); лог: кто и когда открывал.</div>
+  </div>
+
+  <div class="story">
+    <div class="story-meta"><span class="story-id">US-005</span><span class="badge b-red">Must Have</span><span class="badge b-red">Маркетплейс</span></div>
+    <div class="story-text">Как пациент после приёма, я хочу видеть цены на назначенные лекарства в ближайших аптеках, чтобы купить выгодно.</div>
+    <div class="story-ac"><strong>Критерии приёмки:</strong> список лекарств из выписки; цены из 3+ аптечных сетей; сортировка по цене и расстоянию; навигация к выбранной аптеке.</div>
+  </div>
+
+  <div class="story">
+    <div class="story-meta"><span class="story-id">US-006</span><span class="badge b-amber">Should Have</span><span class="badge b-teal">Хранилище</span></div>
+    <div class="story-text">Как пациент, я хочу чтобы умные часы автоматически синхронизировали данные (пульс, шаги, сон) в мою карту.</div>
+    <div class="story-ac"><strong>Критерии приёмки:</strong> поддержка Apple Health и Google Fit; синхронизация 1 раз в день; данные отображаются в дашборде; пользователь может выбрать какие данные синхронизировать.</div>
+  </div>
+
+  <div class="story">
+    <div class="story-meta"><span class="story-id">US-007</span><span class="badge b-amber">Should Have</span><span class="badge b-blue">ИИ</span></div>
+    <div class="story-text">Как пациент, я хочу получать умные уведомления когда стоит записаться к врачу, чтобы не пропускать важные обследования.</div>
+    <div class="story-ac"><strong>Критерии приёмки:</strong> напоминания на основе дат предыдущих визитов; уведомление при аномальных тенденциях в анализах; ежегодные напоминания о профилактических обследованиях по полу и возрасту.</div>
+  </div>
+
+  <h3 style="font-size:14px;font-weight:700;color:var(--slate);margin:.75rem 0;text-transform:uppercase;letter-spacing:.04em">Врач (B2B-инструмент)</h3>
+
+  <div class="story" style="border-left-color:var(--blue)">
+    <div class="story-meta"><span class="story-id">US-008</span><span class="badge b-red">Must Have</span><span class="badge b-amber">Доступ</span></div>
+    <div class="story-text">Как врач, я хочу отсканировать QR пациента и увидеть всю историю болезни, чтобы поставить более точный диагноз.</div>
+    <div class="story-ac"><strong>Критерии приёмки:</strong> открывается менее чем за 3 секунды в любом браузере; структурированная история: анализы, диагнозы, препараты, аллергии; хронологическая лента; экспорт в PDF.</div>
+  </div>
+
+  <div class="story" style="border-left-color:var(--blue)">
+    <div class="story-meta"><span class="story-id">US-009</span><span class="badge b-amber">Should Have</span><span class="badge b-blue">ИИ</span></div>
+    <div class="story-text">Как врач, я хочу получать ИИ-подсказки во время приёма на основе истории пациента, чтобы не пропустить важные взаимосвязи.</div>
+    <div class="story-ac"><strong>Критерии приёмки:</strong> ИИ анализирует симптомы + историю; предлагает диагностические гипотезы с вероятностью; указывает на потенциальные взаимодействия препаратов; ссылается на источники (PubMed / КлинРек).</div>
+  </div>
+
+  <h3 style="font-size:14px;font-weight:700;color:var(--slate);margin:.75rem 0;text-transform:uppercase;letter-spacing:.04em">Клиника (B2B API)</h3>
+
+  <div class="story" style="border-left-color:var(--purple)">
+    <div class="story-meta"><span class="story-id">US-010</span><span class="badge b-amber">Should Have</span><span class="badge b-purple">API</span></div>
+    <div class="story-text">Как клиника, я хочу интегрироваться через REST API для автоматической передачи результатов анализов пациентам, чтобы не просить их скачивать PDF вручную.</div>
+    <div class="story-ac"><strong>Критерии приёмки:</strong> REST API с авторизацией (OAuth2); webhook для уведомлений; документация (Swagger); тестовая среда; SLA 99.9%.</div>
+  </div>
+</section>
+
+<!-- USER JOURNEY -->
+<section id="journey">
+  <div class="sec-hdr"><div class="sec-num">06</div><h2>Путь пользователя</h2></div>
+
+  <h3 style="font-size:14px;font-weight:700;margin-bottom:1rem;color:var(--slate)">→ Путь пациента (основной сценарий)</h3>
+
+  <div class="journey-step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-title">Регистрация</div>
+      <div class="step-desc">Телефон + СНИЛС / полис ОМС. Авторизация через Госуслуги (SSO). Автоматически создаётся зашифрованное хранилище. Родители сразу добавляют детей — их данные ведутся с рождения.</div>
+      <div class="step-tags"><span class="badge b-teal">Госуслуги SSO</span><span class="badge b-teal">Телефон / СНИЛС</span><span class="badge b-blue">Профиль ребёнка</span></div>
+    </div>
+  </div>
+
+  <div class="journey-step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-title">Привязка источников данных</div>
+      <div class="step-desc">Подключение умных часов (Apple Health, Google Fit). Импорт из ЕМИАС (Москва, СПб). Загрузка существующих PDF/фото результатов — OCR структурирует и добавляет в хронологию. Ручное добавление прошлых анализов.</div>
+      <div class="step-tags"><span class="badge b-teal">Apple Health / Fit</span><span class="badge b-blue">ЕМИАС / ЕГИСЗ</span><span class="badge b-amber">OCR документов</span></div>
+    </div>
+  </div>
+
+  <div class="journey-step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-title">Дашборд здоровья</div>
+      <div class="step-desc">Временна́я шкала всех событий здоровья. Графики динамики: гемоглобин, сахар, холестерин, пульс. Счётчик «дней жизни» от активности (шаги, сон, вес). Push-уведомление: «Гемоглобин снижается 3 месяца — стоит проверить».</div>
+      <div class="step-tags"><span class="badge b-teal">Временна́я шкала</span><span class="badge b-blue">Динамика показателей</span><span class="badge b-purple">Геймификация</span></div>
+    </div>
+  </div>
+
+  <div class="journey-step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-title">ИИ-ассистент объясняет анализы</div>
+      <div class="step-desc">Новый анализ из клиники → ИИ автоматически разбирает каждый показатель: «Ваш ферритин 11 мкг/л — ниже нормы (12–150). Возможна латентная нехватка железа. Рекомендую обсудить с терапевтом.» Несколько ИИ-моделей верифицируют ответ.</div>
+      <div class="step-tags"><span class="badge b-blue">Простой язык</span><span class="badge b-blue">Multi-model</span><span class="badge b-teal">Источники</span></div>
+    </div>
+  </div>
+
+  <div class="journey-step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <div class="step-title">Запись к врачу и QR-код</div>
+      <div class="step-desc">Пациент записывается к врачу через маркетплейс по рейтингу. На приёме открывает QR-код в приложении. Врач сканирует — полная история открывается в браузере за 2–3 секунды. Никакой установки для врача.</div>
+      <div class="step-tags"><span class="badge b-amber">QR без установки</span><span class="badge b-teal">Рейтинг врачей</span><span class="badge b-blue">Временный доступ</span></div>
+    </div>
+  </div>
+
+  <div class="journey-step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <div class="step-title">Маркетплейс после приёма</div>
+      <div class="step-desc">Врач выписал рецепт → в приложении сразу список лекарств с лучшей ценой в 5 ближайших аптеках. Назначены анализы → список лабораторий рядом с ценами и расстоянием. Скидка за выполнение назначений (партнёрская программа).</div>
+      <div class="step-tags"><span class="badge b-amber">Лучшая цена</span><span class="badge b-red">Геолокация</span><span class="badge b-purple">Скидки</span></div>
+    </div>
+  </div>
+
+  <h3 style="font-size:14px;font-weight:700;margin:1.5rem 0 1rem;color:var(--slate)">→ Путь врача</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Шаг</th><th>Действие</th><th>Ценность для врача</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Пациент показывает QR на смартфоне</td><td>Не нужно просить карту или слушать устный пересказ истории болезни</td></tr>
+        <tr><td>2</td><td>Врач сканирует QR, открывает в браузере</td><td>Полная история за 3 сек. Без установки, без регистрации</td></tr>
+        <tr><td>3</td><td>ИИ-подсказки на боковой панели</td><td>Врач + ИИ = 95% точность диагноза (vs 5% только ИИ)</td></tr>
+        <tr><td>4</td><td>Выписывает рецепт цифрово</td><td>Автоматически загружается в приложение пациента</td></tr>
+        <tr><td>5</td><td>Клиника получает рейтинг и отзывы</td><td>Привлечение новых пациентов через маркетплейс</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- UML USE CASE -->
+<section id="uml">
+  <div class="sec-hdr"><div class="sec-num">07</div><h2>UML: Use Case Diagram</h2></div>
+  <div class="diag">
+    <svg width="100%" viewBox="0 0 940 600" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>UML Use Case Diagram — ПУЛЬС</title>
+      <defs>
+        <style>
+          .uml-sys{fill:#f8fafc;stroke:#94a3b8;stroke-width:1.5;stroke-dasharray:none}
+          .uml-inner{fill:#f0fdfa;stroke:#99f6e4;stroke-width:1}
+          .uml-uc{fill:white;stroke:#0d9488;stroke-width:1.5}
+          .uml-uc-right{fill:white;stroke:#0891b2;stroke-width:1.5}
+          .uml-uc-btm{fill:white;stroke:#7c3aed;stroke-width:1.5}
+          .uml-line{stroke:#94a3b8;stroke-width:1;fill:none}
+          .uml-dashed{stroke:#cbd5e1;stroke-width:1;fill:none;stroke-dasharray:4 3}
+          .uml-text{font-family:-apple-system,sans-serif;fill:#0f172a}
+          .uml-small{font-family:-apple-system,sans-serif;fill:#475569;font-size:10px}
+          .uml-actor-body{stroke:#475569;stroke-width:1.5;fill:none}
+          .uml-actor-head{fill:none;stroke:#475569;stroke-width:1.5}
+          .uml-divider{stroke:#e2e8f0;stroke-width:1;stroke-dasharray:6 4}
+          .uml-group-bg{fill:#f8fafc;stroke:#e2e8f0;stroke-width:1}
+          .uml-include{stroke:#7c3aed;stroke-width:1;fill:none;stroke-dasharray:4 3}
+          .include-label{font-size:9px;fill:#7c3aed;font-family:-apple-system,sans-serif}
+        </style>
+        <marker id="arr-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M1 1L9 5L1 9" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+        </marker>
+        <marker id="arr-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M1 1L9 5L1 9" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+        </marker>
+      </defs>
+
+      <!-- System boundary -->
+      <rect x="140" y="20" width="655" height="560" rx="10" class="uml-sys"/>
+      <text x="467" y="44" text-anchor="middle" font-size="13" font-weight="700" fill="#475569" font-family="-apple-system,sans-serif">«system» ПУЛЬС</text>
+
+      <!-- Dividers -->
+      <line x1="140" y1="300" x2="795" y2="300" class="uml-divider"/>
+      <line x1="465" y1="20" x2="465" y2="580" class="uml-divider"/>
+
+      <!-- Group labels -->
+      <text x="302" y="72" text-anchor="middle" font-size="11" font-weight="600" fill="#0d9488" font-family="-apple-system,sans-serif">Данные пациента</text>
+      <text x="628" y="72" text-anchor="middle" font-size="11" font-weight="600" fill="#0891b2" font-family="-apple-system,sans-serif">ИИ-анализ</text>
+      <text x="302" y="332" text-anchor="middle" font-size="11" font-weight="600" fill="#7c3aed" font-family="-apple-system,sans-serif">Доступ и управление</text>
+      <text x="628" y="332" text-anchor="middle" font-size="11" font-weight="600" fill="#d97706" font-family="-apple-system,sans-serif">Маркетплейс</text>
+
+      <!-- === TOP-LEFT: Data use cases === -->
+      <!-- UC1 Просмотр истории -->
+      <ellipse cx="302" cy="115" rx="90" ry="22" class="uml-uc"/>
+      <text x="302" y="119" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">Просмотр истории</text>
+
+      <!-- UC2 Загрузка документов -->
+      <ellipse cx="302" cy="180" rx="90" ry="22" class="uml-uc"/>
+      <text x="302" y="184" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">Загрузка документов</text>
+
+      <!-- UC3 Синхр. устройства -->
+      <ellipse cx="302" cy="245" rx="90" ry="22" class="uml-uc"/>
+      <text x="302" y="249" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">Синхр. устройств</text>
+
+      <!-- === TOP-RIGHT: AI use cases === -->
+      <!-- UC4 ИИ-интерпретация -->
+      <ellipse cx="628" cy="115" rx="90" ry="22" class="uml-uc-right"/>
+      <text x="628" y="119" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">ИИ-интерпретация</text>
+
+      <!-- UC5 Динамика -->
+      <ellipse cx="628" cy="180" rx="90" ry="22" class="uml-uc-right"/>
+      <text x="628" y="184" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">Динамика показателей</text>
+
+      <!-- UC6 Рекомендации -->
+      <ellipse cx="628" cy="245" rx="90" ry="22" class="uml-uc-right"/>
+      <text x="628" y="249" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">Рекомендации врача</text>
+
+      <!-- === BOTTOM-LEFT: Access use cases === -->
+      <!-- UC7 QR-доступ пациента -->
+      <ellipse cx="302" cy="375" rx="90" ry="22" class="uml-uc-btm"/>
+      <text x="302" y="371" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">QR-доступ</text>
+      <text x="302" y="384" text-anchor="middle" font-size="10" fill="#475569" font-family="-apple-system,sans-serif">пациента</text>
+
+      <!-- UC8 Скан QR врачом -->
+      <ellipse cx="302" cy="450" rx="90" ry="22" class="uml-uc-btm"/>
+      <text x="302" y="446" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">Скан QR врачом</text>
+      <text x="302" y="459" text-anchor="middle" font-size="10" fill="#475569" font-family="-apple-system,sans-serif">доступ к карте</text>
+
+      <!-- UC9 Управление правами -->
+      <ellipse cx="302" cy="530" rx="90" ry="22" class="uml-uc-btm"/>
+      <text x="302" y="526" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">Управление</text>
+      <text x="302" y="539" text-anchor="middle" font-size="10" fill="#475569" font-family="-apple-system,sans-serif">правами доступа</text>
+
+      <!-- === BOTTOM-RIGHT: Marketplace use cases === -->
+      <!-- UC10 Запись к врачу -->
+      <ellipse cx="628" cy="375" rx="90" ry="22" style="fill:white;stroke:#d97706;stroke-width:1.5"/>
+      <text x="628" y="371" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">Запись</text>
+      <text x="628" y="384" text-anchor="middle" font-size="10" fill="#475569" font-family="-apple-system,sans-serif">к врачу</text>
+
+      <!-- UC11 Поиск лекарств -->
+      <ellipse cx="628" cy="450" rx="90" ry="22" style="fill:white;stroke:#d97706;stroke-width:1.5"/>
+      <text x="628" y="446" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">Поиск лекарств</text>
+      <text x="628" y="459" text-anchor="middle" font-size="10" fill="#475569" font-family="-apple-system,sans-serif">лучшая цена</text>
+
+      <!-- UC12 Заказ анализов -->
+      <ellipse cx="628" cy="530" rx="90" ry="22" style="fill:white;stroke:#d97706;stroke-width:1.5"/>
+      <text x="628" y="526" text-anchor="middle" font-size="11" fill="#0f172a" font-family="-apple-system,sans-serif">Заказ анализов</text>
+      <text x="628" y="539" text-anchor="middle" font-size="10" fill="#475569" font-family="-apple-system,sans-serif">лаборатории рядом</text>
+
+      <!-- ===== ACTORS ===== -->
+      <!-- Пациент (left, y=250) -->
+      <circle cx="65" cy="195" r="13" class="uml-actor-head"/>
+      <line x1="65" y1="208" x2="65" y2="248" class="uml-actor-body"/>
+      <line x1="42" y1="225" x2="88" y2="225" class="uml-actor-body"/>
+      <line x1="65" y1="248" x2="48" y2="272" class="uml-actor-body"/>
+      <line x1="65" y1="248" x2="82" y2="272" class="uml-actor-body"/>
+      <text x="65" y="288" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a" font-family="-apple-system,sans-serif">Пациент</text>
+
+      <!-- Страховая (left, y=470) -->
+      <circle cx="65" cy="415" r="13" class="uml-actor-head"/>
+      <line x1="65" y1="428" x2="65" y2="468" class="uml-actor-body"/>
+      <line x1="42" y1="445" x2="88" y2="445" class="uml-actor-body"/>
+      <line x1="65" y1="468" x2="48" y2="492" class="uml-actor-body"/>
+      <line x1="65" y1="468" x2="82" y2="492" class="uml-actor-body"/>
+      <text x="65" y="507" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a" font-family="-apple-system,sans-serif">Страховая</text>
+
+      <!-- Врач (right, y=160) -->
+      <circle cx="880" cy="130" r="13" class="uml-actor-head"/>
+      <line x1="880" y1="143" x2="880" y2="183" class="uml-actor-body"/>
+      <line x1="857" y1="160" x2="903" y2="160" class="uml-actor-body"/>
+      <line x1="880" y1="183" x2="863" y2="207" class="uml-actor-body"/>
+      <line x1="880" y1="183" x2="897" y2="207" class="uml-actor-body"/>
+      <text x="880" y="222" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a" font-family="-apple-system,sans-serif">Врач</text>
+
+      <!-- Клиника (right, y=360) -->
+      <circle cx="880" cy="335" r="13" class="uml-actor-head"/>
+      <line x1="880" y1="348" x2="880" y2="388" class="uml-actor-body"/>
+      <line x1="857" y1="365" x2="903" y2="365" class="uml-actor-body"/>
+      <line x1="880" y1="388" x2="863" y2="412" class="uml-actor-body"/>
+      <line x1="880" y1="388" x2="897" y2="412" class="uml-actor-body"/>
+      <text x="880" y="427" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a" font-family="-apple-system,sans-serif">Клиника</text>
+
+      <!-- Аптека (right, y=460) -->
+      <circle cx="880" cy="455" r="13" class="uml-actor-head"/>
+      <line x1="880" y1="468" x2="880" y2="500" class="uml-actor-body"/>
+      <line x1="864" y1="479" x2="896" y2="479" class="uml-actor-body"/>
+      <line x1="880" y1="500" x2="866" y2="520" class="uml-actor-body"/>
+      <line x1="880" y1="500" x2="894" y2="520" class="uml-actor-body"/>
+      <text x="880" y="534" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a" font-family="-apple-system,sans-serif">Аптека</text>
+
+      <!-- ===== CONNECTION LINES ===== -->
+      <!-- Пациент → UC1 Просмотр истории -->
+      <line x1="90" y1="205" x2="212" y2="115" class="uml-line" marker-end="url(#arr-gray)"/>
+      <!-- Пациент → UC2 Загрузка -->
+      <line x1="90" y1="220" x2="212" y2="180" class="uml-line" marker-end="url(#arr-gray)"/>
+      <!-- Пациент → UC3 Синхр. -->
+      <line x1="90" y1="235" x2="212" y2="245" class="uml-line" marker-end="url(#arr-gray)"/>
+      <!-- Пациент → UC4 ИИ-интерпретация -->
+      <line x1="90" y1="210" x2="538" y2="115" class="uml-line" marker-end="url(#arr-gray)"/>
+      <!-- Пациент → UC7 QR-доступ -->
+      <line x1="90" y1="255" x2="212" y2="375" class="uml-line" marker-end="url(#arr-gray)"/>
+      <!-- Пациент → UC10 Запись к врачу -->
+      <line x1="90" y1="265" x2="538" y2="375" class="uml-line" marker-end="url(#arr-gray)"/>
+
+      <!-- Страховая → UC5 Динамика -->
+      <line x1="90" y1="435" x2="538" y2="200" class="uml-line" marker-end="url(#arr-gray)"/>
+
+      <!-- Врач → UC8 Скан QR -->
+      <line x1="852" y1="150" x2="392" y2="450" class="uml-line" marker-end="url(#arr-gray)"/>
+      <!-- Врач → UC6 Рекомендации -->
+      <line x1="852" y1="155" x2="718" y2="245" class="uml-line" marker-end="url(#arr-gray)"/>
+      <!-- Врач → UC10 Запись -->
+      <line x1="852" y1="175" x2="718" y2="375" class="uml-line" marker-end="url(#arr-gray)"/>
+
+      <!-- Клиника → UC10 Запись -->
+      <line x1="852" y1="355" x2="718" y2="375" class="uml-line" marker-end="url(#arr-gray)"/>
+      <!-- Клиника → UC12 Заказ анализов -->
+      <line x1="852" y1="380" x2="718" y2="520" class="uml-line" marker-end="url(#arr-gray)"/>
+
+      <!-- Аптека → UC11 Поиск лекарств -->
+      <line x1="852" y1="455" x2="718" y2="450" class="uml-line" marker-end="url(#arr-gray)"/>
+
+      <!-- Include: UC7 → UC1 (QR includes having history) -->
+      <line x1="302" y1="353" x2="302" y2="137" class="uml-include" marker-end="url(#arr-purple)"/>
+      <text x="316" y="255" class="include-label">«include»</text>
+
+      <!-- Include: UC8 → UC1 -->
+      <line x1="320" y1="432" x2="368" y2="133" class="uml-include" marker-end="url(#arr-purple)"/>
+
+      <!-- Legend -->
+      <rect x="148" y="548" width="280" height="24" rx="4" fill="rgba(248,250,252,0.9)" stroke="#e2e8f0" stroke-width="1"/>
+      <line x1="158" y1="560" x2="178" y2="560" class="uml-include"/>
+      <text x="184" y="564" font-size="10" fill="#475569" font-family="-apple-system,sans-serif">«include» — включает другой Use Case</text>
+    </svg>
+  </div>
+</section>
+
+<!-- SERVICE ARCHITECTURE -->
+<section id="arch">
+  <div class="sec-hdr"><div class="sec-num">08</div><h2>Сервисная архитектура</h2></div>
+
+  <!-- Architecture as HTML + visual layout -->
+  <div style="display:grid;grid-template-columns:160px auto 160px;gap:12px;align-items:center;margin-bottom:1rem">
+
+    <!-- Left: Sources -->
+    <div>
+      <div style="font-size:10px;font-weight:700;color:var(--gray);letter-spacing:.06em;text-align:center;margin-bottom:8px;text-transform:uppercase">Источники</div>
+      <div class="arch-source"><div class="arch-source-dot" style="background:#6b7280"></div>Apple Health / Fit</div>
+      <div class="arch-source"><div class="arch-source-dot" style="background:#6b7280"></div>Garmin / Polar</div>
+      <div class="arch-source"><div class="arch-source-dot" style="background:#0891b2"></div>ЕМИАС / ЕГИСЗ</div>
+      <div class="arch-source"><div class="arch-source-dot" style="background:#0891b2"></div>Лаборатории API</div>
+      <div class="arch-source"><div class="arch-source-dot" style="background:#6b7280"></div>PDF / Фото / OCR</div>
+      <div class="arch-source"><div class="arch-source-dot" style="background:#d97706"></div>Аптеки / Клиники</div>
+    </div>
+
+    <!-- Center: Platform -->
+    <div>
+      <div style="font-size:10px;font-weight:700;color:var(--gray);letter-spacing:.06em;text-align:center;margin-bottom:8px;text-transform:uppercase">Ядро платформы</div>
+      <div style="background:var(--navy);border-radius:12px;padding:1rem">
+        <!-- API Gateway -->
+        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 12px;font-size:11px;color:rgba(255,255,255,.7);text-align:center;margin-bottom:10px;font-weight:700">API Gateway · Auth (OAuth2 + JWT) · Rate Limiting</div>
+        <!-- 2x2 services -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div style="background:#0f766e;border-radius:8px;padding:.75rem">
+            <div style="font-size:11px;font-weight:700;color:#ccfbf1;margin-bottom:4px">Хранилище данных</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.6)">PostgreSQL · S3 · Redis Cache</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.6)">FHIR R4 · HL7</div>
+          </div>
+          <div style="background:#1d4ed8;border-radius:8px;padding:.75rem">
+            <div style="font-size:11px;font-weight:700;color:#dbeafe;margin-bottom:4px">ИИ-движок</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.6)">RAG · ChromaDB</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.6)">GigaChat / YandexGPT</div>
+          </div>
+          <div style="background:#b45309;border-radius:8px;padding:.75rem">
+            <div style="font-size:11px;font-weight:700;color:#fef3c7;margin-bottom:4px">Маркетплейс</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.6)">Агрегатор аптек</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.6)">Лаборатории · Booking</div>
+          </div>
+          <div style="background:#6d28d9;border-radius:8px;padding:.75rem">
+            <div style="font-size:11px;font-weight:700;color:#ede9fe;margin-bottom:4px">Профиль / QR</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.6)">Управление доступом</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.6)">Уведомления / Push</div>
+          </div>
+        </div>
+        <!-- OCR Service -->
+        <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:6px 12px;font-size:10px;color:rgba(255,255,255,.6);text-align:center">OCR Service (EasyOCR) · Notification Service · Analytics · Audit Log</div>
+      </div>
+    </div>
+
+    <!-- Right: Consumers -->
+    <div>
+      <div style="font-size:10px;font-weight:700;color:var(--gray);letter-spacing:.06em;text-align:center;margin-bottom:8px;text-transform:uppercase">Клиенты</div>
+      <div class="arch-consumer"><div class="arch-source-dot" style="background:var(--teal)"></div>iOS / Android app</div>
+      <div class="arch-consumer"><div class="arch-source-dot" style="background:var(--teal)"></div>Web-приложение</div>
+      <div class="arch-consumer"><div class="arch-source-dot" style="background:var(--blue)"></div>Портал врача (Web)</div>
+      <div class="arch-consumer"><div class="arch-source-dot" style="background:var(--purple)"></div>B2B API (клиники)</div>
+      <div class="arch-consumer"><div class="arch-source-dot" style="background:var(--amber)"></div>Партнёрский API</div>
+      <div class="arch-consumer"><div class="arch-source-dot" style="background:var(--gray)"></div>Admin / Analytics</div>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <strong>Суверенный стек:</strong> все данные хранятся на серверах в РФ (Yandex Cloud / Selectel). LLM — только российские модели (GigaChat, YandexGPT) или self-hosted open-source. Соответствие 152-ФЗ, 323-ФЗ, ФСТЭК.
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="tech">
+  <div class="sec-hdr"><div class="sec-num">09</div><h2>Технический стек</h2></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Слой</th><th>Технология</th><th>Обоснование</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Mobile</strong></td><td>React Native (Expo)</td><td>Один кодобаз для iOS и Android. Быстрый MVP.</td></tr>
+        <tr><td><strong>Web Frontend</strong></td><td>React + TypeScript + Vite</td><td>Портал врача + веб-версия пациента</td></tr>
+        <tr><td><strong>Backend API</strong></td><td>FastAPI (Python)</td><td>Быстрая разработка, отличная поддержка AI/ML библиотек</td></tr>
+        <tr><td><strong>База данных</strong></td><td>PostgreSQL 16</td><td>Реляционные данные пациентов, ACID-транзакции</td></tr>
+        <tr><td><strong>Файловое хранилище</strong></td><td>S3-совместимое (Yandex Object Storage)</td><td>PDF, снимки, изображения. Данные в РФ.</td></tr>
+        <tr><td><strong>Кэш / сессии</strong></td><td>Redis</td><td>QR-токены, сессии, rate limiting</td></tr>
+        <tr><td><strong>Векторная БД</strong></td><td>ChromaDB</td><td>RAG для ИИ-анализа медицинских документов</td></tr>
+        <tr><td><strong>LLM</strong></td><td>GigaChat API / YandexGPT</td><td>Российские провайдеры, данные не покидают РФ</td></tr>
+        <tr><td><strong>OCR</strong></td><td>EasyOCR + кастомная post-обработка</td><td>Распознавание бланков анализов на русском</td></tr>
+        <tr><td><strong>Очереди</strong></td><td>Celery + Redis</td><td>Асинхронная обработка документов, уведомления</td></tr>
+        <tr><td><strong>Инфраструктура</strong></td><td>Yandex Cloud (Kubernetes)</td><td>Российский провайдер, соответствие 152-ФЗ</td></tr>
+        <tr><td><strong>CI/CD</strong></td><td>GitLab CI + Docker</td><td>Автоматическое тестирование и деплой</td></tr>
+        <tr><td><strong>Мониторинг</strong></td><td>Grafana + Prometheus</td><td>Observability, алерты</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- MONETIZATION -->
+<section id="monetization">
+  <div class="sec-hdr"><div class="sec-num">10</div><h2>Монетизация</h2></div>
+
+  <div class="rev-item">
+    <div class="rev-icon" style="background:var(--teal-bg);font-size:18px">💊</div>
+    <div style="flex:1">
+      <div class="rev-name">01 · Комиссия: маркетплейс лекарств</div>
+      <div class="rev-desc">Агрегация цен из аптечных сетей (Apteka.ru, Еаптека, сети). После выписки рецепта — мгновенная конверсия. Пациент уже в контексте «купить».</div>
+      <div class="rev-est">10–15% комиссия · потенциал ₽2–5B/год при 500K MAU</div>
+    </div>
+    <span class="badge b-red">Высокий</span>
+  </div>
+
+  <div class="rev-item">
+    <div class="rev-icon" style="background:var(--blue-bg);font-size:18px">🧪</div>
+    <div style="flex:1">
+      <div class="rev-name">02 · Комиссия: агрегатор лабораторий</div>
+      <div class="rev-desc">Запись на анализы через лаборатории-партнёры (Helix, Invitro, CMD). Доказанная бизнес-модель — этот рынок уже монетизируется. Мы приходим с трафиком.</div>
+      <div class="rev-est">10–20% комиссия · сред. чек ₽2 000 → ₽200–400 с заказа</div>
+    </div>
+    <span class="badge b-red">Высокий</span>
+  </div>
+
+  <div class="rev-item">
+    <div class="rev-icon" style="background:var(--amber-bg);font-size:18px">📅</div>
+    <div style="flex:1">
+      <div class="rev-name">03 · Комиссия: запись к врачу</div>
+      <div class="rev-desc">Онлайн-запись в клиники через маркетплейс. Клиники платят за привлечённого пациента (CPA) или по подписке за доступ к аудитории.</div>
+      <div class="rev-est">₽300–800 / визит · B2B подписка ₽15K–50K/мес/клиника</div>
+    </div>
+    <span class="badge b-amber">Средний</span>
+  </div>
+
+  <div class="rev-item">
+    <div class="rev-icon" style="background:var(--purple-bg);font-size:18px">👨‍⚕️</div>
+    <div style="flex:1">
+      <div class="rev-name">04 · Подписка врача / клиники</div>
+      <div class="rev-desc">Расширенный портал врача: ИИ-подсказки в режиме приёма, история пациентов, аналитика. Клиники платят как за SaaS-инструмент для своей команды.</div>
+      <div class="rev-est">₽500–2 000/мес на врача · SaaS клиники ₽10K–30K/мес</div>
+    </div>
+    <span class="badge b-amber">Средний</span>
+  </div>
+
+  <div class="rev-item">
+    <div class="rev-icon" style="background:var(--teal-bg);font-size:18px">⭐</div>
+    <div style="flex:1">
+      <div class="rev-name">05 · Premium подписка (B2C)</div>
+      <div class="rev-desc">Freemium модель. Бесплатно: хранилище 50 записей + базовый ИИ. Premium: безлимит + расширенный ИИ + семейный план + приоритетный доступ.</div>
+      <div class="rev-est">₽199–499/мес · ₽1 990–4 990/год</div>
+    </div>
+    <span class="badge b-teal">Рост</span>
+  </div>
+
+  <div class="rev-item">
+    <div class="rev-icon" style="background:#fdf4ff;font-size:18px">🧠</div>
+    <div style="flex:1">
+      <div class="rev-name">06 · Обезличенные датасеты</div>
+      <div class="rev-desc">Анонимизированные паттерны заболеваний для фармкомпаний и разработчиков медицинских ИИ. Требует согласия пользователей и соответствия 152-ФЗ. Фармкомпании платят хорошо.</div>
+      <div class="rev-est">B2B контракты ₽5M–50M · долгосрочная история</div>
+    </div>
+    <span class="badge b-gray">Будущее</span>
+  </div>
+
+  <div class="rev-item">
+    <div class="rev-icon" style="background:var(--bg);font-size:18px">📢</div>
+    <div style="flex:1">
+      <div class="rev-name">07 · Нативная реклама</div>
+      <div class="rev-desc">Только контекстно-релевантная реклама: после диагноза «показаны санатории», после анализа щитовидки — специализированные клиники. Никакого баннерного спама.</div>
+      <div class="rev-est">CPM модель · доп. доход при 100K+ MAU</div>
+    </div>
+    <span class="badge b-gray">Доп.</span>
+  </div>
+</section>
+
+<!-- FINANCIALS -->
+<section id="financials">
+  <div class="sec-hdr"><div class="sec-num">11</div><h2>Финансовые проекции</h2></div>
+  <div class="callout callout-warn">Проекции основаны на бенчмарках аналогичных healthtech стартапов. Требуют уточнения после MVP-валидации.
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:1rem">
+    <table>
+      <thead>
+        <tr><th>Показатель</th><th>MVP (Q3–Q4 2026)</th><th>Год 1 (2027)</th><th>Год 2 (2028)</th><th>Год 3 (2029)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>MAU (пользователи)</strong></td><td>1K–5K</td><td>25K</td><td>150K</td><td>500K</td></tr>
+        <tr><td><strong>Выручка</strong></td><td>₽0.5M</td><td>₽18M</td><td>₽120M</td><td>₽480M</td></tr>
+        <tr><td><strong>Затраты</strong></td><td>₽4M</td><td>₽22M</td><td>₽75M</td><td>₽200M</td></tr>
+        <tr><td><strong>EBITDA</strong></td><td>-₽3.5M</td><td>-₽4M</td><td>₽45M</td><td>₽280M</td></tr>
+        <tr><td><strong>Команда</strong></td><td>3–4 чел.</td><td>8–10 чел.</td><td>20–25 чел.</td><td>50+ чел.</td></tr>
+        <tr><td><strong>Основная выручка</strong></td><td>Маркетплейс</td><td>Маркетплейс + B2B</td><td>All streams</td><td>All streams</td></tr>
+        <tr><td><strong>Инвестиции нужны</strong></td><td>₽5M (seed)</td><td>₽30M (А)</td><td>₽150M (B)</td><td>Прибыльность</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:14px;font-weight:700;margin:1.5rem 0 .75rem">Структура затрат (Год 1)</h3>
+  <div class="bar-row"><div class="bar-lbl">Разработка и команда</div><div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--teal)">55%</div></div><div class="bar-val">₽12M</div></div>
+  <div class="bar-row"><div class="bar-lbl">Инфраструктура (Cloud)</div><div class="bar-track"><div class="bar-fill" style="width:14%;background:var(--blue)">14%</div></div><div class="bar-val">₽3M</div></div>
+  <div class="bar-row"><div class="bar-lbl">Маркетинг и привлечение</div><div class="bar-track"><div class="bar-fill" style="width:18%;background:var(--amber)">18%</div></div><div class="bar-val">₽4M</div></div>
+  <div class="bar-row"><div class="bar-lbl">Юридическое + compliance</div><div class="bar-track"><div class="bar-fill" style="width:9%;background:var(--purple)">9%</div></div><div class="bar-val">₽2M</div></div>
+  <div class="bar-row"><div class="bar-lbl">Прочее (офис, инструменты)</div><div class="bar-track"><div class="bar-fill" style="width:5%;background:var(--gray)">5%</div></div><div class="bar-val">₽1M</div></div>
+
+  <h3 style="font-size:14px;font-weight:700;margin:1.5rem 0 .75rem">Unit Economics (при 100K MAU)</h3>
+  <div class="card-grid">
+    <div class="card"><div class="card-title">CAC (привлечение)</div><div class="card-val" style="color:var(--amber)">₽150–400</div><div class="card-note">через врачей-блогеров и органику</div></div>
+    <div class="card"><div class="card-title">ARPU (год)</div><div class="card-val" style="color:var(--teal)">₽1 200</div><div class="card-note">комиссии + premium</div></div>
+    <div class="card"><div class="card-title">LTV (3 года)</div><div class="card-val" style="color:var(--teal)">₽3 600</div><div class="card-note">высокий churn protection: данные</div></div>
+    <div class="card"><div class="card-title">LTV/CAC</div><div class="card-val" style="color:var(--teal)">9–24x</div><div class="card-note">отличный показатель для SaaS</div></div>
+  </div>
+  <div class="callout callout-success" style="margin-top:1rem">
+    <strong>Ключевое преимущество:</strong> накопленные медицинские данные — главный антиchurn. Пользователь не уйдёт к конкуренту, потому что не захочет «начинать историю заново». LTV существенно выше среднего по рынку.
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="sec-hdr"><div class="sec-num">12</div><h2>Роадмап</h2></div>
+
+  <div class="phase phase-1">
+    <div class="phase-head">
+      <div style="font-size:15px;font-weight:700">Фаза 1 · MVP</div>
+      <span class="badge b-teal">Май – Август 2026</span>
+      <span class="badge b-gray">₽5M seed</span>
+    </div>
+    <div style="font-size:12px;color:var(--slate);margin-bottom:.5rem"><strong>Цель:</strong> рабочий продукт для первых 1–5K пользователей. Валидация core-гипотез.</div>
+    <div class="phase-items">
+      <div class="phase-item"><div class="phase-dot" style="background:var(--teal)"></div><span>Авторизация: телефон + Госуслуги SSO</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--teal)"></div><span>Загрузка документов + OCR структуризация (EasyOCR)</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--teal)"></div><span>Базовый ИИ-ассистент: объяснение анализов (GigaChat RAG)</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--teal)"></div><span>Дашборд: временна́я шкала + динамика показателей</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--teal)"></div><span>QR-доступ для врача (браузерная веб-версия)</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--teal)"></div><span>Пилот с 1–2 частными клиниками в СПб</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--teal)"></div><span>iOS + Android приложение (React Native Expo)</span></div>
+    </div>
+  </div>
+
+  <div class="phase phase-2">
+    <div class="phase-head">
+      <div style="font-size:15px;font-weight:700">Фаза 2 · Рост</div>
+      <span class="badge b-blue">Сентябрь 2026 – Март 2027</span>
+      <span class="badge b-gray">₽30M раунд A</span>
+    </div>
+    <div style="font-size:12px;color:var(--slate);margin-bottom:.5rem"><strong>Цель:</strong> 25K MAU. Первая выручка. Партнёрства с аптечными сетями и лабораториями.</div>
+    <div class="phase-items">
+      <div class="phase-item"><div class="phase-dot" style="background:var(--blue)"></div><span>Маркетплейс: агрегатор лабораторий (Helix, Invitro, CMD)</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--blue)"></div><span>Маркетплейс: агрегатор аптек (Apteka.ru, Еаптека)</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--blue)"></div><span>Интеграция Apple Health + Google Fit</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--blue)"></div><span>Профиль врача + рейтинг + онлайн-запись</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--blue)"></div><span>B2B подписка клиники (SaaS + API)</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--blue)"></div><span>Продвижение через врачей-блогеров</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--blue)"></div><span>Multi-model верификация ИИ (снижение галлюцинаций)</span></div>
+    </div>
+  </div>
+
+  <div class="phase phase-3">
+    <div class="phase-head">
+      <div style="font-size:15px;font-weight:700">Фаза 3 · Масштаб и СНГ</div>
+      <span class="badge b-purple">2027–2028</span>
+      <span class="badge b-gray">₽150M раунд B</span>
+    </div>
+    <div style="font-size:12px;color:var(--slate);margin-bottom:.5rem"><strong>Цель:</strong> 150–500K MAU. Выход в Казахстан, Беларусь, Узбекистан.</div>
+    <div class="phase-items">
+      <div class="phase-item"><div class="phase-dot" style="background:var(--purple)"></div><span>Интеграция ЕМИАС / ЕГИСЗ (Москва + регионы)</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--purple)"></div><span>Геймификация: счётчик жизни + партнёрская программа</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--purple)"></div><span>Расширенный RAG на базе мед. исследований (PubMed, КлинРек)</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--purple)"></div><span>ДМС интеграция (страховые компании)</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--purple)"></div><span>Обезличенные датасеты (B2B, фармкомпании)</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--purple)"></div><span>Выход: Казахстан → Беларусь → Узбекистан</span></div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--purple)"></div><span>Обязательная интеграция с гос. системами (переговоры с Минздравом)</span></div>
+    </div>
+  </div>
+
+  <h3 style="font-size:14px;font-weight:700;margin:1.5rem 0 .75rem">Маркетинговая стратегия (Phase 1–2)</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px">
+    <div class="pillar p-teal"><div class="pillar-title" style="color:var(--teal2)">Врачи-блогеры</div><div class="pillar-body">Основной канал. Врачи рекомендуют пациентам. CAC ~₽200, доверие высокое.</div></div>
+    <div class="pillar p-blue"><div class="pillar-title" style="color:var(--blue)">Пилот с клиниками</div><div class="pillar-body">Клиника даёт ПУЛЬС своим пациентам — instant нативная установка без рекламы.</div></div>
+    <div class="pillar p-amber"><div class="pillar-title" style="color:var(--amber)">SEO / органика</div><div class="pillar-body">"Как расшифровать анализ крови" — миллионы запросов. ИИ-объяснения = SEO-машина.</div></div>
+    <div class="pillar p-purple"><div class="pillar-title" style="color:var(--purple)">Гранты Минздрава / Сколково</div><div class="pillar-body">Цифровизация здравоохранения = приоритет государства. Гранты до ₽20M без разводнения.</div></div>
+  </div>
+</section>
+
+<!-- RISKS -->
+<section id="risks">
+  <div class="sec-hdr"><div class="sec-num">13</div><h2>Риски и митигация</h2></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Риск</th><th>Вероятность</th><th>Влияние</th><th>Митигация</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Регуляторный (152-ФЗ, 323-ФЗ)</strong></td>
+          <td><span class="badge b-amber">Средняя</span></td>
+          <td><span class="badge b-red">Высокое</span></td>
+          <td>Юридический аудит на этапе MVP. Данные только в РФ. Партнёрство с compliance-консультантом.</td>
+        </tr>
+        <tr>
+          <td><strong>Яндекс / Сбер выпускают аналог</strong></td>
+          <td><span class="badge b-amber">Средняя</span></td>
+          <td><span class="badge b-amber">Среднее</span></td>
+          <td>Скорость. Нишевое позиционирование. Качество ИИ. У крупных — медленно, у нас — фокус.</td>
+        </tr>
+        <tr>
+          <td><strong>Низкое доверие пациентов к хранению данных</strong></td>
+          <td><span class="badge b-amber">Средняя</span></td>
+          <td><span class="badge b-amber">Среднее</span></td>
+          <td>Прозрачность: данные только у пользователя. Возможность on-device хранения в будущем.</td>
+        </tr>
+        <tr>
+          <td><strong>Клиники отказываются интегрироваться</strong></td>
+          <td><span class="badge b-teal">Низкая</span></td>
+          <td><span class="badge b-amber">Среднее</span></td>
+          <td>QR-механизм работает без интеграции. Врач получает ценность сразу — это pull-стратегия.</td>
+        </tr>
+        <tr>
+          <td><strong>ИИ галлюцинирует в медицинских советах</strong></td>
+          <td><span class="badge b-amber">Средняя</span></td>
+          <td><span class="badge b-red">Высокое</span></td>
+          <td>Multi-model верификация. Чёткий disclaimer. ИИ объясняет, не ставит диагнозы.</td>
+        </tr>
+        <tr>
+          <td><strong>Технический долг, медленный MVP</strong></td>
+          <td><span class="badge b-teal">Низкая</span></td>
+          <td><span class="badge b-amber">Среднее</span></td>
+          <td>Опытная команда с существующим стеком (FastAPI, React, ChromaDB). Проверено на ЮРИИ.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:14px;font-weight:700;margin:1.5rem 0 .75rem">Команда (MVP)</h3>
+  <div class="card-grid">
+    <div class="card"><div class="card-title">Backend / Инфраструктура</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Артур</div><div style="font-size:12px;color:var(--slate)">Правильный бэкенд, хранение реляционных и файловых данных</div></div>
+    <div class="card"><div class="card-title">Fullstack / Product</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Эмиль</div><div style="font-size:12px;color:var(--slate)">Продуктовое мышление, бизнес-сторона, частичная разработка</div></div>
+    <div class="card"><div class="card-title">ML / AI</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">ML-инженер (СПб)</div><div style="font-size:12px;color:var(--slate)">RAG, файн-тюнинг, векторные базы данных</div></div>
+    <div class="card"><div class="card-title">Frontend / Mobile</div><div style="font-size:13px;font-weight:600;margin-bottom:4px">Frontend-разработчик</div><div style="font-size:12px;color:var(--slate)">React Native + веб-интерфейсы</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);text-align:center;color:var(--gray);font-size:12px">
+  <p>ПУЛЬС · Бизнес-документация v0.1 · Апрель 2026 · Конфиденциально</p>
+  <p style="margin-top:4px">Документ подготовлен для внутреннего использования и переговоров с инвесторами</p>
+</div>
+
+</main>
+</div>
+
+<script>
+// Smooth scroll for sidebar links
+document.querySelectorAll('.sb-link').forEach(link => {
+  link.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+// Active link tracking
+const sections = document.querySelectorAll('section[id], div[id="cover"]');
+const navLinks = document.querySelectorAll('.sb-link');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector('.sb-link[href="#' + entry.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.2 });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

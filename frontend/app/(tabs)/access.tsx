@@ -1,18 +1,11 @@
 import { useState, useCallback } from 'react'
 import {
   View, Text, TouchableOpacity, ScrollView, TextInput,
-  StyleSheet, ActivityIndicator, Modal, Platform, Alert,
+  StyleSheet, ActivityIndicator, Modal,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { colors, spacing, radius, fontSize } from '@/src/lib/theme'
-import { Card } from '@/components/ui/Card'
 import { aiApi } from '@/src/api/client'
-import { storage } from '@/src/lib/storage'
-import { getDemoType } from '@/src/data/demo'
-
-type TabKey = 'encyclopedia' | 'doctor'
-
-// ─── Encyclopedia data ────────────────────────────────────────────────────────
 
 interface Topic {
   id: string; icon: string; label: string; category: string; prompt: string
@@ -35,53 +28,7 @@ const TOPICS: Topic[] = [
 
 const CATEGORIES = ['все', 'кардиология', 'анемия', 'диабет', 'эндокринология', 'пульмонология', 'неврология', 'ортопедия', 'гастроэнтерология', 'офтальмология', 'акушерство']
 
-// ─── Doctor link data ─────────────────────────────────────────────────────────
-
-const DOCTOR_LINKS: Record<string, { tokenId: string; label: string; desc: string }> = {
-  male:            { tokenId: 'demo-male',    label: 'Иван Петров',   desc: 'Мужской кабинет' },
-  female_pregnant: { tokenId: 'demo-female',  label: 'Мария Иванова', desc: 'Беременность 18 нед.' },
-  female_cycle:    { tokenId: 'demo-female2', label: 'Анна Соколова', desc: 'Менструальный цикл' },
-}
-
-const MODES = [
-  { key: 'full',    label: 'Полный доступ',    desc: 'Все анализы и документы', icon: 'documents-outline' },
-  { key: 'limited', label: 'Ограниченный',     desc: 'Только последние анализы', icon: 'eye-outline' },
-  { key: 'single',  label: 'Один визит',       desc: 'Действует 24 часа', icon: 'time-outline' },
-]
-
-// ─── Main screen ──────────────────────────────────────────────────────────────
-
-export default function AccessScreen() {
-  const [tab, setTab] = useState<TabKey>('encyclopedia')
-
-  return (
-    <View style={styles.root}>
-      {/* Tab switcher */}
-      <View style={styles.tabRow}>
-        <TouchableOpacity
-          style={[styles.tabBtn, tab === 'encyclopedia' && styles.tabBtnActive]}
-          onPress={() => setTab('encyclopedia')}
-        >
-          <Ionicons name={tab === 'encyclopedia' ? 'book' : 'book-outline'} size={15} color={tab === 'encyclopedia' ? colors.teal : colors.textMuted} />
-          <Text style={[styles.tabText, tab === 'encyclopedia' && styles.tabTextActive]}>Справочник</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tabBtn, tab === 'doctor' && styles.tabBtnActive]}
-          onPress={() => setTab('doctor')}
-        >
-          <Ionicons name={tab === 'doctor' ? 'share' : 'share-outline'} size={15} color={tab === 'doctor' ? colors.teal : colors.textMuted} />
-          <Text style={[styles.tabText, tab === 'doctor' && styles.tabTextActive]}>Ссылка для врача</Text>
-        </TouchableOpacity>
-      </View>
-
-      {tab === 'encyclopedia' ? <EncyclopediaTab /> : <DoctorLinkTab />}
-    </View>
-  )
-}
-
-// ─── Encyclopedia tab ─────────────────────────────────────────────────────────
-
-function EncyclopediaTab() {
+export default function EncyclopediaScreen() {
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('все')
   const [loading, setLoading] = useState(false)
@@ -120,7 +67,12 @@ function EncyclopediaTab() {
 
   return (
     <>
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.root} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+
+        <View>
+          <Text style={styles.title}>Справочник</Text>
+          <Text style={styles.subtitle}>Объяснения болезней и анализов от ИИ</Text>
+        </View>
 
         <View style={styles.askCard}>
           <View style={styles.askRow}>
@@ -231,208 +183,19 @@ function EncyclopediaTab() {
   )
 }
 
-// ─── Doctor link tab ──────────────────────────────────────────────────────────
-
-function DoctorLinkTab() {
-  const [selectedMode, setSelectedMode] = useState('full')
-  const [generatedLink, setGeneratedLink] = useState<string | null>(null)
-  const [demoType, setDemoType] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [copied, setCopied] = useState(false)
-
-  // Detect demo type once on mount
-  useState(() => {
-    getDemoType(storage).then(t => setDemoType(t))
-  })
-
-  function getBaseUrl() {
-    if (Platform.OS === 'web' && typeof window !== 'undefined') {
-      return window.location.origin
-    }
-    return 'http://45.80.130.211:3000'
-  }
-
-  function generateLink() {
-    setLoading(true)
-    setTimeout(() => {
-      const profile = DOCTOR_LINKS[demoType ?? 'male'] ?? DOCTOR_LINKS['male']
-      const baseUrl = getBaseUrl()
-      setGeneratedLink(`${baseUrl}/doctor/${profile.tokenId}`)
-      setLoading(false)
-    }, 600)
-  }
-
-  function copyLink() {
-    if (!generatedLink) return
-    if (Platform.OS === 'web' && typeof navigator !== 'undefined') {
-      navigator.clipboard.writeText(generatedLink).catch(() => {})
-    }
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  const profile = DOCTOR_LINKS[demoType ?? 'male'] ?? DOCTOR_LINKS['male']
-
-  return (
-    <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-
-      {/* Info */}
-      <Card style={styles.infoCard}>
-        <View style={styles.infoRow}>
-          <Ionicons name="share-social-outline" size={22} color={colors.teal} />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.infoTitle}>Ссылка для врача</Text>
-            <Text style={styles.infoText}>
-              Сгенерируйте ссылку и отправьте врачу. Он откроет медицинскую карту в браузере без регистрации.
-              Вы контролируете срок и объём данных.
-            </Text>
-          </View>
-        </View>
-      </Card>
-
-      {/* Mode selector */}
-      <Text style={styles.sectionLabel}>Режим доступа</Text>
-      <View style={styles.modesGrid}>
-        {MODES.map(m => (
-          <TouchableOpacity
-            key={m.key}
-            style={[styles.modeCard, selectedMode === m.key && styles.modeCardActive]}
-            onPress={() => setSelectedMode(m.key)}
-            activeOpacity={0.8}
-          >
-            <Ionicons name={m.icon as any} size={20} color={selectedMode === m.key ? colors.teal : colors.textMuted} />
-            <Text style={[styles.modeLabel, selectedMode === m.key && styles.modeLabelActive]}>{m.label}</Text>
-            <Text style={styles.modeDesc}>{m.desc}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Preview of patient */}
-      <Text style={styles.sectionLabel}>Данные пациента</Text>
-      <Card style={styles.patientPreview}>
-        <View style={styles.patientRow}>
-          <View style={styles.patientAvatar}>
-            <Text style={styles.patientAvatarText}>{profile.label.charAt(0)}</Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.patientName}>{profile.label}</Text>
-            <Text style={styles.patientDesc}>{profile.desc} · Демо-аккаунт</Text>
-          </View>
-        </View>
-      </Card>
-
-      {/* Generate button */}
-      {!generatedLink ? (
-        <TouchableOpacity
-          style={styles.generateBtn}
-          onPress={generateLink}
-          disabled={loading}
-          activeOpacity={0.85}
-        >
-          {loading
-            ? <ActivityIndicator color={colors.white} size="small" />
-            : <>
-                <Ionicons name="link-outline" size={20} color={colors.white} />
-                <Text style={styles.generateBtnText}>Создать ссылку</Text>
-              </>
-          }
-        </TouchableOpacity>
-      ) : (
-        <Card style={styles.linkCard}>
-          <View style={styles.linkHeader}>
-            <Ionicons name="checkmark-circle" size={18} color={colors.success} />
-            <Text style={styles.linkTitle}>Ссылка готова!</Text>
-          </View>
-
-          <View style={styles.linkBox}>
-            <Text style={styles.linkText} numberOfLines={2} selectable>{generatedLink}</Text>
-          </View>
-
-          <View style={styles.linkActions}>
-            <TouchableOpacity style={styles.copyBtn} onPress={copyLink} activeOpacity={0.85}>
-              <Ionicons name={copied ? 'checkmark' : 'copy-outline'} size={16} color={colors.white} />
-              <Text style={styles.copyBtnText}>{copied ? 'Скопировано!' : 'Копировать'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.resetBtn}
-              onPress={() => setGeneratedLink(null)}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.resetBtnText}>Новая ссылка</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.linkHint}>
-            <Ionicons name="information-circle-outline" size={13} color={colors.textMuted} />
-            <Text style={styles.linkHintText}>
-              Отправьте ссылку врачу в мессенджере или покажите QR-код.
-              В демо-режиме ссылка показывает тестовые данные.
-            </Text>
-          </View>
-        </Card>
-      )}
-
-      {/* What doctor sees */}
-      <Text style={styles.sectionLabel}>Что увидит врач</Text>
-      <Card style={styles.previewList}>
-        {[
-          { icon: 'person-outline', text: 'ФИО, возраст, пол' },
-          { icon: 'flask-outline', text: 'Последние анализы с расшифровкой' },
-          { icon: 'alert-circle-outline', text: 'Отклонения от нормы выделены' },
-          { icon: 'medical-outline', text: 'Диагнозы и текущие препараты' },
-          { icon: 'calendar-outline', text: 'Предстоящие визиты к врачам' },
-        ].map(item => (
-          <View key={item.icon} style={styles.previewRow}>
-            <Ionicons name={item.icon as any} size={16} color={colors.teal} />
-            <Text style={styles.previewText}>{item.text}</Text>
-          </View>
-        ))}
-      </Card>
-
-    </ScrollView>
-  )
-}
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
-
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
+  content: { padding: spacing.lg, gap: spacing.md },
 
-  tabRow: {
-    flexDirection: 'row',
-    backgroundColor: colors.white,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    paddingHorizontal: spacing.md,
-  },
-  tabBtn: {
-    flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 6, paddingVertical: 12,
-    borderBottomWidth: 2, borderBottomColor: 'transparent',
-  },
-  tabBtnActive: { borderBottomColor: colors.teal },
-  tabText: { fontSize: fontSize.sm, color: colors.textMuted, fontWeight: '500' },
-  tabTextActive: { color: colors.teal, fontWeight: '700' },
+  title: { fontSize: fontSize.xxl, fontWeight: '800', color: colors.text },
+  subtitle: { fontSize: fontSize.sm, color: colors.textMuted, marginTop: 2 },
 
-  scroll: { flex: 1 },
-  scrollContent: { padding: spacing.lg, gap: spacing.md },
-
-  // Ask AI
-  askCard: {
-    backgroundColor: colors.white, borderRadius: radius.md,
-    borderWidth: 1, borderColor: colors.border,
-    padding: spacing.md, gap: spacing.sm,
-  },
+  askCard: { backgroundColor: colors.white, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border, padding: spacing.md, gap: spacing.sm },
   askRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   askTitle: { fontSize: fontSize.md, fontWeight: '700', color: colors.text },
   askHint: { fontSize: fontSize.sm, color: colors.textMuted },
   askInputRow: { flexDirection: 'row', gap: spacing.sm, alignItems: 'center' },
-  askInput: {
-    flex: 1, height: 44, paddingHorizontal: spacing.md,
-    backgroundColor: colors.bg, borderRadius: radius.md,
-    borderWidth: 1, borderColor: colors.border,
-    fontSize: fontSize.sm, color: colors.text,
-  },
+  askInput: { flex: 1, height: 44, paddingHorizontal: spacing.md, backgroundColor: colors.bg, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border, fontSize: fontSize.sm, color: colors.text },
   askBtn: { width: 44, height: 44, backgroundColor: colors.teal, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   askBtnDisabled: { backgroundColor: colors.border },
 
@@ -442,31 +205,19 @@ const styles = StyleSheet.create({
   chipText: { fontSize: fontSize.xs, fontWeight: '600', color: colors.textSecondary },
   chipTextActive: { color: colors.white },
 
-  searchBox: {
-    flexDirection: 'row', alignItems: 'center', gap: spacing.sm,
-    height: 40, paddingHorizontal: spacing.md,
-    backgroundColor: colors.white, borderRadius: radius.md,
-    borderWidth: 1, borderColor: colors.border,
-  },
+  searchBox: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, height: 40, paddingHorizontal: spacing.md, backgroundColor: colors.white, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border },
   searchInput: { flex: 1, fontSize: fontSize.sm, color: colors.text },
 
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  topicCard: {
-    width: '47%', backgroundColor: colors.white, borderRadius: radius.md,
-    borderWidth: 1, borderColor: colors.border, padding: spacing.md, gap: 6,
-  },
+  topicCard: { width: '47%', backgroundColor: colors.white, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border, padding: spacing.md, gap: 6 },
   topicIcon: { fontSize: 26 },
   topicLabel: { fontSize: fontSize.sm, fontWeight: '700', color: colors.text },
   topicCategory: { fontSize: fontSize.xs, color: colors.teal },
   empty: { alignItems: 'center', paddingVertical: spacing.xl },
   emptyText: { fontSize: fontSize.md, color: colors.textMuted },
 
-  // Modal
   modal: { flex: 1, backgroundColor: colors.white },
-  modalHeader: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    padding: spacing.lg, borderBottomWidth: 1, borderBottomColor: colors.border, paddingTop: spacing.xl,
-  },
+  modalHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: spacing.lg, borderBottomWidth: 1, borderBottomColor: colors.border, paddingTop: spacing.xl },
   modalTitle: { flex: 1, fontSize: fontSize.xl, fontWeight: '800', color: colors.text, marginRight: spacing.sm },
   modalClose: { padding: 4 },
   modalBody: { flex: 1, padding: spacing.lg },
@@ -477,49 +228,4 @@ const styles = StyleSheet.create({
   modalContent: { fontSize: fontSize.md, color: colors.text, lineHeight: 26 },
   disclaimer: { flexDirection: 'row', gap: 6, alignItems: 'flex-start', marginTop: spacing.xl, padding: spacing.md, backgroundColor: colors.bg, borderRadius: radius.md },
   disclaimerText: { flex: 1, fontSize: fontSize.xs, color: colors.textMuted, lineHeight: 18 },
-
-  // Doctor link tab
-  infoCard: { backgroundColor: colors.tealLight, borderColor: colors.tealBorder },
-  infoRow: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start' },
-  infoTitle: { fontSize: fontSize.sm, fontWeight: '700', color: colors.tealDark, marginBottom: 4 },
-  infoText: { fontSize: fontSize.sm, color: colors.tealDark, lineHeight: 20 },
-
-  sectionLabel: { fontSize: fontSize.xs, fontWeight: '700', color: colors.textMuted, textTransform: 'uppercase', letterSpacing: 0.8 },
-
-  modesGrid: { flexDirection: 'row', gap: spacing.sm },
-  modeCard: { flex: 1, padding: spacing.md, borderRadius: radius.md, borderWidth: 2, borderColor: colors.border, gap: 5, alignItems: 'center' },
-  modeCardActive: { borderColor: colors.teal, backgroundColor: colors.tealLight },
-  modeLabel: { fontSize: fontSize.xs, fontWeight: '700', color: colors.text, textAlign: 'center' },
-  modeLabelActive: { color: colors.teal },
-  modeDesc: { fontSize: 10, color: colors.textMuted, textAlign: 'center' },
-
-  patientPreview: {},
-  patientRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-  patientAvatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.teal, alignItems: 'center', justifyContent: 'center' },
-  patientAvatarText: { fontSize: fontSize.lg, fontWeight: '800', color: colors.white },
-  patientName: { fontSize: fontSize.md, fontWeight: '700', color: colors.text },
-  patientDesc: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 2 },
-
-  generateBtn: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: spacing.sm, height: 52, backgroundColor: colors.teal, borderRadius: radius.md,
-  },
-  generateBtnText: { fontSize: fontSize.md, fontWeight: '700', color: colors.white },
-
-  linkCard: { gap: spacing.md },
-  linkHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  linkTitle: { fontSize: fontSize.md, fontWeight: '700', color: colors.success },
-  linkBox: { backgroundColor: colors.bg, borderRadius: radius.md, padding: spacing.md, borderWidth: 1, borderColor: colors.border },
-  linkText: { fontSize: fontSize.xs, color: colors.text, fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace' },
-  linkActions: { flexDirection: 'row', gap: spacing.sm },
-  copyBtn: { flex: 2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, height: 44, backgroundColor: colors.teal, borderRadius: radius.md },
-  copyBtnText: { fontSize: fontSize.sm, fontWeight: '700', color: colors.white },
-  resetBtn: { flex: 1, height: 44, borderWidth: 1, borderColor: colors.border, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
-  resetBtnText: { fontSize: fontSize.sm, color: colors.textSecondary, fontWeight: '600' },
-  linkHint: { flexDirection: 'row', gap: 6, alignItems: 'flex-start' },
-  linkHintText: { flex: 1, fontSize: fontSize.xs, color: colors.textMuted, lineHeight: 18 },
-
-  previewList: { gap: spacing.sm },
-  previewRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  previewText: { fontSize: fontSize.sm, color: colors.text },
 })

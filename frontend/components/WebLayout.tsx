@@ -12,16 +12,16 @@ const SIDEBAR_WIDTH = 220
 const MOBILE_BREAKPOINT = 768
 
 const baseNav = [
-  { href: '/(tabs)/',            label: 'Дашборд',      icon: 'grid-outline',         iconActive: 'grid',         female: false },
-  { href: '/(tabs)/records',     label: 'Медкарта',     icon: 'folder-outline',       iconActive: 'folder',       female: false },
-  { href: '/(tabs)/analytics',   label: 'Аналитика',    icon: 'bar-chart-outline',    iconActive: 'bar-chart',    female: false },
-  { href: '/(tabs)/vaccines',    label: 'Прививки',     icon: 'shield-outline',       iconActive: 'shield',       female: false },
-  { href: '/(tabs)/calendar',    label: 'Календарь',    icon: 'calendar-outline',     iconActive: 'calendar',     female: false },
-  { href: '/(tabs)/health',      label: 'Здоровье',     icon: 'heart-outline',        iconActive: 'heart',        female: true },
-  { href: '/(tabs)/ai',          label: 'ИИ-ассистент', icon: 'chatbubble-outline',   iconActive: 'chatbubble',   female: false },
-  { href: '/(tabs)/upload',      label: 'Загрузка',     icon: 'cloud-upload-outline', iconActive: 'cloud-upload', female: false },
-  { href: '/(tabs)/access',      label: 'Справочник',   icon: 'book-outline',         iconActive: 'book',         female: false  },
-  { href: '/(tabs)/marketplace', label: 'Маркетплейс',  icon: 'storefront-outline',   iconActive: 'storefront',   female: false },
+  { href: '/(tabs)/',            label: 'Главная',          icon: 'home-outline',         iconActive: 'home',         female: false },
+  { href: '/(tabs)/records',     label: 'Медкарта',         icon: 'folder-outline',       iconActive: 'folder',       female: false },
+  { href: '/(tabs)/analytics',   label: 'Аналитика',        icon: 'bar-chart-outline',    iconActive: 'bar-chart',    female: false },
+  { href: '/(tabs)/vaccines',    label: 'Прививки',         icon: 'shield-outline',       iconActive: 'shield',       female: false },
+  { href: '/(tabs)/calendar',    label: 'Календарь',        icon: 'calendar-outline',     iconActive: 'calendar',     female: false },
+  { href: '/(tabs)/health',      label: 'Здоровье',         icon: 'heart-outline',        iconActive: 'heart',        female: true  },
+  { href: '/(tabs)/ai',          label: 'ИИ-ассистент',     icon: 'chatbubble-outline',   iconActive: 'chatbubble',   female: false },
+  { href: '/(tabs)/access',      label: 'Справочник',       icon: 'book-outline',         iconActive: 'book',         female: false },
+  { href: '/(tabs)/share',       label: 'Ссылка для врача', icon: 'share-outline',        iconActive: 'share',        female: false },
+  { href: '/(tabs)/marketplace', label: 'Маркетплейс',      icon: 'storefront-outline',   iconActive: 'storefront',   female: false },
 ]
 
 export default function WebLayout() {

@@ -7,15 +7,16 @@ import WebLayout from '@/components/WebLayout'
 import { storage } from '@/src/lib/storage'
 
 const coreTabs = [
-  { name: 'index',       title: 'Дашборд',    icon: 'grid-outline',            iconActive: 'grid' },
+  { name: 'index',       title: 'Главная',    icon: 'home-outline',            iconActive: 'home' },
   { name: 'records',     title: 'Медкарта',   icon: 'folder-outline',          iconActive: 'folder' },
-  { name: 'analytics',  title: 'Аналитика',  icon: 'bar-chart-outline',       iconActive: 'bar-chart' },
+  { name: 'analytics',   title: 'Аналитика',  icon: 'bar-chart-outline',       iconActive: 'bar-chart' },
   { name: 'vaccines',    title: 'Прививки',   icon: 'shield-outline',          iconActive: 'shield' },
-  { name: 'calendar',   title: 'Календарь',  icon: 'calendar-outline',        iconActive: 'calendar' },
+  { name: 'calendar',    title: 'Календарь',  icon: 'calendar-outline',        iconActive: 'calendar' },
   { name: 'health',      title: 'Здоровье',   icon: 'heart-outline',           iconActive: 'heart' },
   { name: 'ai',          title: 'ИИ',         icon: 'chatbubble-outline',      iconActive: 'chatbubble' },
   { name: 'upload',      title: 'Загрузка',   icon: 'cloud-upload-outline',    iconActive: 'cloud-upload' },
   { name: 'access',      title: 'Справочник', icon: 'book-outline',            iconActive: 'book' },
+  { name: 'share',       title: 'Врачу',      icon: 'share-outline',           iconActive: 'share' },
   { name: 'marketplace', title: 'Маркет',     icon: 'storefront-outline',      iconActive: 'storefront' },
 ]
 
@@ -46,7 +47,7 @@ export default function TabsLayout() {
       }}
     >
       {coreTabs.map((t) => {
-        const mobileHidden = ['upload', 'ai', 'access', 'marketplace'].includes(t.name)
+        const mobileHidden = ['upload', 'ai', 'access', 'share', 'marketplace'].includes(t.name)
         const hiddenOnMobile = mobileHidden || (t.name === 'health' && gender !== 'female')
         return (
           <Tabs.Screen

@@ -1,3 +1,5 @@
+export type RecordType = 'analysis' | 'prescription' | 'discharge' | 'vaccination' | 'imaging' | 'other'
+
 export interface User {
   id: string
   phone: string
@@ -6,7 +8,15 @@ export interface User {
   created_at: string
 }
 
-export type RecordType = 'analysis' | 'prescription' | 'discharge' | 'vaccination' | 'imaging' | 'other'
+export interface Indicator {
+  id: string
+  name: string
+  value: number
+  unit: string | null
+  ref_min: number | null
+  ref_max: number | null
+  status: 'normal' | 'low' | 'high'
+}
 
 export interface MedicalRecord {
   id: string
@@ -14,21 +24,12 @@ export interface MedicalRecord {
   type: RecordType
   title: string
   date: string
-  source: string
+  source: string | null
   summary: string | null
   file_url: string | null
   ai_interpreted: boolean
   created_at: string
-  indicators?: Indicator[]
-}
-
-export interface Indicator {
-  name: string
-  value: number
-  unit: string
-  ref_min: number | null
-  ref_max: number | null
-  status: 'normal' | 'low' | 'high'
+  indicators: Indicator[]
 }
 
 export interface QRToken {
@@ -38,16 +39,6 @@ export interface QRToken {
   expires_at: string | null
   accessed_by: string | null
   created_at: string
-}
-
-export interface MarketplaceItem {
-  id: string
-  type: 'pharmacy' | 'lab' | 'doctor'
-  name: string
-  address: string
-  distance_km: number
-  price: number | null
-  rating: number | null
 }
 
 export interface AuthTokens {

@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    database_url: str = "postgresql://puls:puls@localhost:5432/puls"
+    database_url: str = "sqlite:///./puls.db"  # local default; set DATABASE_URL=postgresql://... in .env for prod
     redis_url: str = "redis://localhost:6379"
     secret_key: str = "changeme-in-production"
     algorithm: str = "HS256"

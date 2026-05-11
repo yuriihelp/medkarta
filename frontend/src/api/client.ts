@@ -1,22 +1,29 @@
 import axios from 'axios'
+import { Platform } from 'react-native'
+import { storage } from '../lib/storage'
 
-const api = axios.create({
-  baseURL: '/api',
-  headers: { 'Content-Type': 'application/json' },
-})
+// EXPO_PUBLIC_API_URL — set to https://yourdomain.com in production
+// Web: use relative /api (proxied by Nginx)
+// Mobile dev: fallback to localhost; in prod set EXPO_PUBLIC_API_URL
+const PROD_URL = process.env.EXPO_PUBLIC_API_URL
+const BASE_URL = Platform.OS === 'web'
+  ? (PROD_URL ? `${PROD_URL}/api` : '/api')
+  : (PROD_URL ? `${PROD_URL}/api` : 'http://localhost:8000/api')
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
+const api = axios.create({ baseURL: BASE_URL })
+
+api.interceptors.request.use(async (config) => {
+  const token = await storage.getItem('access_token')
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 
 api.interceptors.response.use(
   (res) => res,
-  (err) => {
+  async (err) => {
     if (err.response?.status === 401) {
-      localStorage.removeItem('access_token')
-      window.location.href = '/login'
+      await storage.deleteItem('access_token')
+      // Expo Router redirect handled in _layout
     }
     return Promise.reject(err)
   },
@@ -34,17 +41,17 @@ export const recordsApi = {
   list: (params?: { type?: string; limit?: number; offset?: number }) =>
     api.get('/records', { params }),
   get: (id: string) => api.get(`/records/${id}`),
-  upload: (formData: FormData) =>
-    api.post('/records/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
   create: (data: object) => api.post('/records', data),
   delete: (id: string) => api.delete(`/records/${id}`),
+  upload: (formData: FormData) =>
+    api.post('/records/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
 }
 
 export const aiApi = {
   chat: (message: string, record_id?: string) =>
     api.post('/ai/chat', { message, record_id }),
-  interpret: (record_id: string) =>
-    api.post(`/ai/interpret/${record_id}`),
 }
 
 export const accessApi = {
@@ -55,12 +62,9 @@ export const accessApi = {
 }
 
 export const marketplaceApi = {
-  searchPharmacies: (query: string, lat?: number, lng?: number) =>
-    api.get('/marketplace/pharmacies', { params: { query, lat, lng } }),
-  searchLabs: (lat?: number, lng?: number) =>
-    api.get('/marketplace/labs', { params: { lat, lng } }),
-  searchDoctors: (specialty?: string) =>
-    api.get('/marketplace/doctors', { params: { specialty } }),
+  pharmacies: (query?: string) => api.get('/marketplace/pharmacies', { params: { query } }),
+  labs: () => api.get('/marketplace/labs'),
+  doctors: (specialty?: string) => api.get('/marketplace/doctors', { params: { specialty } }),
 }
 
 export default api

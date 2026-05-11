@@ -118,9 +118,10 @@ export const DEMO_WOMEN_STATUS_FEMALE = {
 // ─── Medical records (for dashboard) ─────────────────────────────────────────
 
 export const DEMO_RECORDS_MALE = [
+  // Latest lipid panel — slight improvement after diet
   {
     id: 'r1', type: 'analysis', title: 'Липидный панель', date: '2026-03-10',
-    source: 'Поликлиника №3', summary: 'Холестерин: 5.2 ммоль/л (норма). ЛПНП: 3.1 ммоль/л. ЛПВП: 1.4 ммоль/л.',
+    source: 'Поликлиника №3', summary: 'Холестерин: 5.2 ммоль/л (норма). Триглицериды снизились по сравнению с прошлым разом.',
     indicators: [
       { name: 'Холестерин общий', value: 5.2, unit: 'ммоль/л', ref_min: 0, ref_max: 5.2, status: 'normal' },
       { name: 'ЛПНП', value: 3.1, unit: 'ммоль/л', ref_min: 0, ref_max: 3.5, status: 'normal' },
@@ -128,6 +129,18 @@ export const DEMO_RECORDS_MALE = [
       { name: 'Триглицериды', value: 1.8, unit: 'ммоль/л', ref_min: 0, ref_max: 1.7, status: 'high' },
     ],
   },
+  // Earlier lipid panel — higher values before diet correction
+  {
+    id: 'r1b', type: 'analysis', title: 'Липидный панель', date: '2025-09-15',
+    source: 'Поликлиника №3', summary: 'Холестерин незначительно повышен. Триглицериды повышены.',
+    indicators: [
+      { name: 'Холестерин общий', value: 5.6, unit: 'ммоль/л', ref_min: 0, ref_max: 5.2, status: 'high' },
+      { name: 'ЛПНП', value: 3.7, unit: 'ммоль/л', ref_min: 0, ref_max: 3.5, status: 'high' },
+      { name: 'ЛПВП', value: 1.2, unit: 'ммоль/л', ref_min: 1.0, ref_max: 99, status: 'normal' },
+      { name: 'Триглицериды', value: 2.3, unit: 'ммоль/л', ref_min: 0, ref_max: 1.7, status: 'high' },
+    ],
+  },
+  // Latest CBC
   {
     id: 'r2', type: 'analysis', title: 'Общий анализ крови', date: '2026-01-05',
     source: 'Лаборатория Гемотест', summary: 'Гемоглобин и лейкоциты в норме. Незначительное снижение тромбоцитов.',
@@ -136,6 +149,17 @@ export const DEMO_RECORDS_MALE = [
       { name: 'Лейкоциты', value: 6.2, unit: '10⁹/л', ref_min: 4.0, ref_max: 9.0, status: 'normal' },
       { name: 'Тромбоциты', value: 145, unit: '10⁹/л', ref_min: 150, ref_max: 400, status: 'low' },
       { name: 'СОЭ', value: 8, unit: 'мм/ч', ref_min: 0, ref_max: 15, status: 'normal' },
+    ],
+  },
+  // CBC a year ago
+  {
+    id: 'r2b', type: 'analysis', title: 'Общий анализ крови', date: '2025-05-20',
+    source: 'Лаборатория Гемотест', summary: 'Все показатели в норме.',
+    indicators: [
+      { name: 'Гемоглобин', value: 152, unit: 'г/л', ref_min: 130, ref_max: 175, status: 'normal' },
+      { name: 'Лейкоциты', value: 5.8, unit: '10⁹/л', ref_min: 4.0, ref_max: 9.0, status: 'normal' },
+      { name: 'Тромбоциты', value: 210, unit: '10⁹/л', ref_min: 150, ref_max: 400, status: 'normal' },
+      { name: 'СОЭ', value: 6, unit: 'мм/ч', ref_min: 0, ref_max: 15, status: 'normal' },
     ],
   },
   {
@@ -349,6 +373,7 @@ export const DEMO_DOCUMENTS_FEMALE: DemoDocument[] = [
 ]
 
 export const DEMO_RECORDS_FEMALE = [
+  // Latest CBC (pregnancy, 14 weeks — anemia detected)
   {
     id: 'r1', type: 'analysis', title: 'Общий анализ крови', date: '2026-04-10',
     source: 'Поликлиника №7', summary: 'Лёгкая анемия — гемоглобин снижен. Рекомендован препарат железа.',
@@ -357,6 +382,17 @@ export const DEMO_RECORDS_FEMALE = [
       { name: 'Лейкоциты', value: 8.4, unit: '10⁹/л', ref_min: 4.0, ref_max: 9.0, status: 'normal' },
       { name: 'Тромбоциты', value: 280, unit: '10⁹/л', ref_min: 150, ref_max: 400, status: 'normal' },
       { name: 'Ферритин', value: 6, unit: 'нг/мл', ref_min: 12, ref_max: 150, status: 'low' },
+    ],
+  },
+  // Earlier CBC (before pregnancy — normal hemoglobin)
+  {
+    id: 'r1b', type: 'analysis', title: 'Общий анализ крови', date: '2025-11-15',
+    source: 'Поликлиника №7', summary: 'Все показатели в норме.',
+    indicators: [
+      { name: 'Гемоглобин', value: 128, unit: 'г/л', ref_min: 120, ref_max: 160, status: 'normal' },
+      { name: 'Лейкоциты', value: 5.9, unit: '10⁹/л', ref_min: 4.0, ref_max: 9.0, status: 'normal' },
+      { name: 'Тромбоциты', value: 245, unit: '10⁹/л', ref_min: 150, ref_max: 400, status: 'normal' },
+      { name: 'Ферритин', value: 18, unit: 'нг/мл', ref_min: 12, ref_max: 150, status: 'normal' },
     ],
   },
   {

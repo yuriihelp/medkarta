@@ -1,114 +1,222 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import {
-  View, Text, TouchableOpacity, ScrollView,
-  StyleSheet, Alert,
+  View, Text, TouchableOpacity, ScrollView, TextInput,
+  StyleSheet, ActivityIndicator, Modal, Pressable,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { colors, spacing, radius, fontSize } from '@/src/lib/theme'
 import { Card } from '@/components/ui/Card'
+import { aiApi } from '@/src/api/client'
 
-type QRMode = 'single' | 'permanent' | 'partial'
+interface Topic {
+  id: string
+  icon: string
+  label: string
+  category: string
+  prompt: string
+}
 
-const modes: { key: QRMode; label: string; desc: string; icon: string }[] = [
-  { key: 'single', label: 'Один визит', desc: 'Действует 24 часа', icon: 'time-outline' },
-  { key: 'permanent', label: 'Постоянный', desc: 'Лечащий врач', icon: 'infinite-outline' },
-  { key: 'partial', label: 'Выборочный', desc: 'Только часть данных', icon: 'eye-outline' },
+const TOPICS: Topic[] = [
+  { id: 't1',  icon: '❤️',  label: 'Гипертония',          category: 'кардиология',    prompt: 'Объясни простым языком что такое артериальная гипертония, каковы причины, симптомы, риски и основные рекомендации по лечению и профилактике.' },
+  { id: 't2',  icon: '🫀',  label: 'Аритмия',              category: 'кардиология',    prompt: 'Объясни простым языком что такое аритмия сердца, какие бывают виды, симптомы, когда опасна и когда нужно обратиться к врачу.' },
+  { id: 't3',  icon: '🩸',  label: 'Анемия',               category: 'анемия',         prompt: 'Объясни простым языком что такое анемия, причины её возникновения (нехватка железа, В12 и др.), симптомы и методы лечения.' },
+  { id: 't4',  icon: '🍬',  label: 'Сахарный диабет',      category: 'диабет',         prompt: 'Объясни простым языком что такое сахарный диабет 1 и 2 типа, чем они отличаются, каковы симптомы, диагностика и управление болезнью.' },
+  { id: 't5',  icon: '🦋',  label: 'Щитовидная железа',    category: 'эндокринология', prompt: 'Объясни простым языком что делает щитовидная железа, что такое гипотиреоз и гипертиреоз, какие симптомы и как их лечат.' },
+  { id: 't6',  icon: '🫁',  label: 'Астма',                category: 'пульмонология',  prompt: 'Объясни простым языком что такое бронхиальная астма, причины приступов, симптомы, принципы лечения и как жить с астмой.' },
+  { id: 't7',  icon: '🧠',  label: 'Мигрень',              category: 'неврология',     prompt: 'Объясни простым языком что такое мигрень, чем она отличается от обычной головной боли, триггеры, симптомы и способы лечения.' },
+  { id: 't8',  icon: '🦴',  label: 'Остеопороз',           category: 'ортопедия',      prompt: 'Объясни простым языком что такое остеопороз, факторы риска, как диагностируют и как укрепить кости.' },
+  { id: 't9',  icon: '🫃',  label: 'Гастрит',              category: 'гастроэнтерология', prompt: 'Объясни простым языком что такое гастрит, его виды (острый, хронический, хеликобактерный), симптомы и лечение.' },
+  { id: 't10', icon: '👁️', label: 'Близорукость',         category: 'офтальмология',  prompt: 'Объясни простым языком что такое близорукость (миопия), почему она развивается, как корректируется и можно ли её предотвратить.' },
+  { id: 't11', icon: '🤰',  label: 'ГРЗ при беременности', category: 'акушерство',     prompt: 'Объясни простым языком какие ОРВИ и простуды опасны при беременности, как их лечить безопасно и чего избегать.' },
+  { id: 't12', icon: '💊',  label: 'Холестерин',           category: 'кардиология',    prompt: 'Объясни простым языком что такое холестерин, в чём разница между "хорошим" и "плохим", какие нормы и как снизить уровень без лекарств.' },
 ]
 
-export default function AccessScreen() {
-  const [creating, setCreating] = useState(false)
-  const [selectedMode, setSelectedMode] = useState<QRMode>('single')
+const CATEGORIES = ['все', 'кардиология', 'анемия', 'диабет', 'эндокринология', 'пульмонология', 'неврология', 'ортопедия', 'гастроэнтерология', 'офтальмология', 'акушерство']
 
-  function generateQR() {
-    setCreating(false)
-    Alert.alert('QR создан', 'Покажите врачу — он откроет карту в браузере без установки приложения')
-  }
+export default function EncyclopediaScreen() {
+  const [search, setSearch] = useState('')
+  const [activeCategory, setActiveCategory] = useState('все')
+  const [loading, setLoading] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [modalTitle, setModalTitle] = useState('')
+  const [modalContent, setModalContent] = useState('')
+  const [customQuery, setCustomQuery] = useState('')
+
+  const filteredTopics = TOPICS.filter(t => {
+    const matchCat = activeCategory === 'все' || t.category === activeCategory
+    const matchSearch = !search || t.label.toLowerCase().includes(search.toLowerCase())
+    return matchCat && matchSearch
+  })
+
+  const openTopic = useCallback(async (topic: Topic) => {
+    setModalTitle(topic.label)
+    setModalContent('')
+    setModalVisible(true)
+    setLoading(true)
+    try {
+      const res = await aiApi.chat(topic.prompt)
+      setModalContent(res.data?.reply || res.data?.message || 'Нет ответа от ИИ.')
+    } catch {
+      setModalContent('Не удалось получить ответ. Проверьте подключение к интернету.')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  const askCustom = useCallback(async () => {
+    if (!customQuery.trim()) return
+    const q = customQuery.trim()
+    setCustomQuery('')
+    setModalTitle(q)
+    setModalContent('')
+    setModalVisible(true)
+    setLoading(true)
+    try {
+      const prompt = `Объясни простым языком на русском: ${q}. Дай краткое медицинское объяснение с причинами, симптомами и рекомендациями.`
+      const res = await aiApi.chat(prompt)
+      setModalContent(res.data?.reply || res.data?.message || 'Нет ответа от ИИ.')
+    } catch {
+      setModalContent('Не удалось получить ответ. Проверьте подключение к интернету.')
+    } finally {
+      setLoading(false)
+    }
+  }, [customQuery])
 
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
+      {/* Header */}
       <View>
-        <Text style={styles.title}>QR-доступ</Text>
-        <Text style={styles.subtitle}>Управляйте тем, кто видит вашу карту</Text>
+        <Text style={styles.title}>Справочник</Text>
+        <Text style={styles.subtitle}>Объяснения болезней и анализов от ИИ</Text>
       </View>
 
-      {/* How it works */}
-      <Card style={styles.infoCard}>
-        <View style={styles.infoRow}>
-          <Ionicons name="qr-code" size={24} color={colors.teal} />
-          <View style={{ flex: 1 }}>
-            <Text style={styles.infoTitle}>Как это работает</Text>
-            <Text style={styles.infoText}>
-              Покажите QR-код врачу на приёме. Он открывает карту в браузере без приложения.
-              Вы контролируете срок и объём данных.
-            </Text>
-          </View>
+      {/* Search bar */}
+      <View style={styles.searchRow}>
+        <View style={styles.searchBox}>
+          <Ionicons name="search-outline" size={18} color={colors.textMuted} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Поиск по справочнику..."
+            placeholderTextColor={colors.textMuted}
+            value={search}
+            onChangeText={setSearch}
+            returnKeyType="search"
+          />
+          {search.length > 0 && (
+            <TouchableOpacity onPress={() => setSearch('')}>
+              <Ionicons name="close-circle" size={16} color={colors.textMuted} />
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+
+      {/* Custom question */}
+      <Card style={styles.askCard}>
+        <View style={styles.askRow}>
+          <Ionicons name="chatbubble-ellipses-outline" size={20} color={colors.teal} />
+          <Text style={styles.askTitle}>Спросить ИИ</Text>
+        </View>
+        <Text style={styles.askHint}>Задайте вопрос о любом диагнозе, анализе или симптоме</Text>
+        <View style={styles.askInputRow}>
+          <TextInput
+            style={styles.askInput}
+            placeholder="Например: что значит повышенный АЛТ?"
+            placeholderTextColor={colors.textMuted}
+            value={customQuery}
+            onChangeText={setCustomQuery}
+            returnKeyType="send"
+            onSubmitEditing={askCustom}
+            multiline={false}
+          />
+          <TouchableOpacity
+            style={[styles.askBtn, !customQuery.trim() && styles.askBtnDisabled]}
+            onPress={askCustom}
+            disabled={!customQuery.trim()}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="arrow-forward" size={18} color={colors.white} />
+          </TouchableOpacity>
         </View>
       </Card>
 
-      {/* Create button */}
-      {!creating && (
-        <TouchableOpacity
-          style={styles.createBtn}
-          onPress={() => setCreating(true)}
-          activeOpacity={0.85}
-        >
-          <Ionicons name="add-circle-outline" size={20} color={colors.white} />
-          <Text style={styles.createBtnText}>Создать QR-код</Text>
-        </TouchableOpacity>
-      )}
+      {/* Category chips */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chips}>
+        {CATEGORIES.map(cat => (
+          <TouchableOpacity
+            key={cat}
+            style={[styles.chip, activeCategory === cat && styles.chipActive]}
+            onPress={() => setActiveCategory(cat)}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.chipText, activeCategory === cat && styles.chipTextActive]}>
+              #{cat}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
 
-      {/* Mode selector */}
-      {creating && (
-        <Card style={styles.createCard}>
-          <Text style={styles.createTitle}>Режим доступа</Text>
-          <View style={styles.modesGrid}>
-            {modes.map((m) => (
-              <TouchableOpacity
-                key={m.key}
-                style={[styles.modeCard, selectedMode === m.key && styles.modeCardActive]}
-                onPress={() => setSelectedMode(m.key)}
-                activeOpacity={0.8}
-              >
-                <Ionicons
-                  name={m.icon as any}
-                  size={22}
-                  color={selectedMode === m.key ? colors.teal : colors.textMuted}
-                />
-                <Text style={[styles.modeLabel, selectedMode === m.key && styles.modeLabelActive]}>
-                  {m.label}
-                </Text>
-                <Text style={styles.modeDesc}>{m.desc}</Text>
-              </TouchableOpacity>
-            ))}
+      {/* Topic grid */}
+      <View style={styles.grid}>
+        {filteredTopics.length === 0 ? (
+          <View style={styles.empty}>
+            <Text style={styles.emptyText}>Ничего не найдено</Text>
           </View>
-
-          <View style={styles.createActions}>
+        ) : (
+          filteredTopics.map(topic => (
             <TouchableOpacity
-              style={styles.cancelBtn}
-              onPress={() => setCreating(false)}
+              key={topic.id}
+              style={styles.topicCard}
+              onPress={() => openTopic(topic)}
               activeOpacity={0.8}
             >
-              <Text style={styles.cancelText}>Отмена</Text>
+              <Text style={styles.topicIcon}>{topic.icon}</Text>
+              <Text style={styles.topicLabel}>{topic.label}</Text>
+              <Text style={styles.topicCategory}>#{topic.category}</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.generateBtn}
-              onPress={generateQR}
-              activeOpacity={0.85}
-            >
-              <Text style={styles.generateText}>Сгенерировать QR</Text>
+          ))
+        )}
+      </View>
+
+      {/* AI Response Modal */}
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modal}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle} numberOfLines={2}>{modalTitle}</Text>
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.modalClose}>
+              <Ionicons name="close" size={24} color={colors.text} />
             </TouchableOpacity>
           </View>
-        </Card>
-      )}
 
-      {/* Active tokens */}
-      <Text style={styles.sectionTitle}>Активные доступы</Text>
-      <Card style={styles.emptyCard}>
-        <Ionicons name="shield-checkmark-outline" size={36} color={colors.border} />
-        <Text style={styles.emptyText}>Нет активных доступов</Text>
-        <Text style={styles.emptyHint}>Создайте QR-код для врача</Text>
-      </Card>
+          <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false}>
+            {loading ? (
+              <View style={styles.loadingBlock}>
+                <ActivityIndicator size="large" color={colors.teal} />
+                <Text style={styles.loadingText}>ИИ готовит объяснение...</Text>
+              </View>
+            ) : (
+              <>
+                <View style={styles.aiBadge}>
+                  <Ionicons name="sparkles" size={14} color={colors.teal} />
+                  <Text style={styles.aiBadgeText}>Объяснение от ИИ-ассистента</Text>
+                </View>
+                <Text style={styles.modalContent}>{modalContent}</Text>
+                <View style={styles.disclaimer}>
+                  <Ionicons name="information-circle-outline" size={14} color={colors.textMuted} />
+                  <Text style={styles.disclaimerText}>
+                    Информация носит ознакомительный характер. Для постановки диагноза обратитесь к врачу.
+                  </Text>
+                </View>
+              </>
+            )}
+          </ScrollView>
+        </View>
+      </Modal>
 
     </ScrollView>
   )
@@ -117,71 +225,130 @@ export default function AccessScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   content: { padding: spacing.lg, gap: spacing.md },
+
   title: { fontSize: fontSize.xxl, fontWeight: '800', color: colors.text },
   subtitle: { fontSize: fontSize.sm, color: colors.textMuted, marginTop: 2 },
 
-  infoCard: { backgroundColor: colors.tealLight, borderColor: colors.tealBorder },
-  infoRow: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start' },
-  infoTitle: { fontSize: fontSize.sm, fontWeight: '700', color: colors.tealDark, marginBottom: 4 },
-  infoText: { fontSize: fontSize.sm, color: colors.tealDark, lineHeight: 20 },
-
-  createBtn: {
+  searchRow: { flexDirection: 'row', gap: spacing.sm },
+  searchBox: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
     gap: spacing.sm,
-    height: 52,
-    backgroundColor: colors.teal,
+    height: 44,
+    paddingHorizontal: spacing.md,
+    backgroundColor: colors.white,
     borderRadius: radius.md,
-  },
-  createBtnText: { fontSize: fontSize.md, fontWeight: '700', color: colors.white },
-
-  createCard: { gap: spacing.md },
-  createTitle: { fontSize: fontSize.lg, fontWeight: '700', color: colors.text },
-  modesGrid: { flexDirection: 'row', gap: spacing.sm },
-  modeCard: {
-    flex: 1,
-    padding: spacing.md,
-    borderRadius: radius.md,
-    borderWidth: 2,
-    borderColor: colors.border,
-    gap: 6,
-    alignItems: 'center',
-  },
-  modeCardActive: { borderColor: colors.teal, backgroundColor: colors.tealLight },
-  modeLabel: { fontSize: fontSize.sm, fontWeight: '700', color: colors.text, textAlign: 'center' },
-  modeLabelActive: { color: colors.teal },
-  modeDesc: { fontSize: fontSize.xs, color: colors.textMuted, textAlign: 'center' },
-
-  createActions: { flexDirection: 'row', gap: spacing.sm },
-  cancelBtn: {
-    flex: 1,
-    height: 48,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  cancelText: { fontSize: fontSize.md, fontWeight: '600', color: colors.textSecondary },
-  generateBtn: {
-    flex: 2,
-    height: 48,
+  searchInput: { flex: 1, fontSize: fontSize.md, color: colors.text },
+
+  askCard: { gap: spacing.sm },
+  askRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  askTitle: { fontSize: fontSize.md, fontWeight: '700', color: colors.text },
+  askHint: { fontSize: fontSize.sm, color: colors.textMuted },
+  askInputRow: { flexDirection: 'row', gap: spacing.sm, alignItems: 'center' },
+  askInput: {
+    flex: 1,
+    height: 44,
+    paddingHorizontal: spacing.md,
+    backgroundColor: colors.bg,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    fontSize: fontSize.sm,
+    color: colors.text,
+  },
+  askBtn: {
+    width: 44, height: 44,
     backgroundColor: colors.teal,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  generateText: { fontSize: fontSize.md, fontWeight: '700', color: colors.white },
+  askBtnDisabled: { backgroundColor: colors.border },
 
-  sectionTitle: {
-    fontSize: fontSize.xs,
-    fontWeight: '700',
-    color: colors.textMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
+  chips: { marginHorizontal: -spacing.lg, paddingHorizontal: spacing.lg },
+  chip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: radius.full,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginRight: spacing.sm,
   },
-  emptyCard: { alignItems: 'center', gap: spacing.xs, paddingVertical: spacing.xl },
-  emptyText: { fontSize: fontSize.md, fontWeight: '600', color: colors.textSecondary },
-  emptyHint: { fontSize: fontSize.sm, color: colors.textMuted },
+  chipActive: { backgroundColor: colors.teal, borderColor: colors.teal },
+  chipText: { fontSize: fontSize.xs, fontWeight: '600', color: colors.textSecondary },
+  chipTextActive: { color: colors.white },
+
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  topicCard: {
+    width: '47%',
+    backgroundColor: colors.white,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: spacing.md,
+    gap: 6,
+  },
+  topicIcon: { fontSize: 28 },
+  topicLabel: { fontSize: fontSize.sm, fontWeight: '700', color: colors.text },
+  topicCategory: { fontSize: fontSize.xs, color: colors.teal },
+
+  empty: { alignItems: 'center', paddingVertical: spacing.xl },
+  emptyText: { fontSize: fontSize.md, color: colors.textMuted },
+
+  // Modal
+  modal: { flex: 1, backgroundColor: colors.white },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+    paddingTop: spacing.xl,
+  },
+  modalTitle: { flex: 1, fontSize: fontSize.xl, fontWeight: '800', color: colors.text, marginRight: spacing.sm },
+  modalClose: { padding: 4 },
+  modalBody: { flex: 1, padding: spacing.lg },
+
+  loadingBlock: { alignItems: 'center', gap: spacing.md, paddingVertical: spacing.xxl },
+  loadingText: { fontSize: fontSize.md, color: colors.textMuted },
+
+  aiBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: spacing.md,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: colors.tealLight,
+    borderRadius: radius.full,
+    alignSelf: 'flex-start',
+  },
+  aiBadgeText: { fontSize: fontSize.xs, fontWeight: '600', color: colors.teal },
+
+  modalContent: {
+    fontSize: fontSize.md,
+    color: colors.text,
+    lineHeight: 26,
+  },
+
+  disclaimer: {
+    flexDirection: 'row',
+    gap: 6,
+    alignItems: 'flex-start',
+    marginTop: spacing.xl,
+    padding: spacing.md,
+    backgroundColor: colors.bg,
+    borderRadius: radius.md,
+  },
+  disclaimerText: { flex: 1, fontSize: fontSize.xs, color: colors.textMuted, lineHeight: 18 },
 })

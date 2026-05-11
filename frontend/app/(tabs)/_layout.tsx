@@ -15,7 +15,7 @@ const coreTabs = [
   { name: 'health',      title: 'Здоровье',   icon: 'heart-outline',           iconActive: 'heart' },
   { name: 'ai',          title: 'ИИ',         icon: 'chatbubble-outline',      iconActive: 'chatbubble' },
   { name: 'upload',      title: 'Загрузка',   icon: 'cloud-upload-outline',    iconActive: 'cloud-upload' },
-  { name: 'access',      title: 'QR',         icon: 'qr-code-outline',         iconActive: 'qr-code' },
+  { name: 'access',      title: 'Справочник', icon: 'book-outline',            iconActive: 'book' },
   { name: 'marketplace', title: 'Маркет',     icon: 'storefront-outline',      iconActive: 'storefront' },
 ]
 

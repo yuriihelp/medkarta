@@ -20,7 +20,7 @@ const baseNav = [
   { href: '/(tabs)/health',      label: 'Здоровье',     icon: 'heart-outline',        iconActive: 'heart',        female: true },
   { href: '/(tabs)/ai',          label: 'ИИ-ассистент', icon: 'chatbubble-outline',   iconActive: 'chatbubble',   female: false },
   { href: '/(tabs)/upload',      label: 'Загрузка',     icon: 'cloud-upload-outline', iconActive: 'cloud-upload', female: false },
-  { href: '/(tabs)/access',      label: 'QR-доступ',    icon: 'qr-code-outline',      iconActive: 'qr-code',      female: false },
+  { href: '/(tabs)/access',      label: 'Справочник',   icon: 'book-outline',         iconActive: 'book',         female: false },
   { href: '/(tabs)/marketplace', label: 'Маркетплейс',  icon: 'storefront-outline',   iconActive: 'storefront',   female: false },
 ]
 

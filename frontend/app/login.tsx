@@ -61,9 +61,9 @@ export default function LoginScreen() {
         {/* Card */}
         <View style={styles.card}>
 
-          {/* Mode toggle */}
+          {/* Mode toggle — регистрация временно отключена */}
           <View style={styles.toggle}>
-            {(['login', 'register'] as Mode[]).map((m) => (
+            {(['login'] as Mode[]).map((m) => (
               <TouchableOpacity
                 key={m}
                 onPress={() => setMode(m)}

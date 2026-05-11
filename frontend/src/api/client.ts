@@ -2,13 +2,13 @@ import axios from 'axios'
 import { Platform } from 'react-native'
 import { storage } from '../lib/storage'
 
-// EXPO_PUBLIC_API_URL — set to https://yourdomain.com in production
-// Web: use relative /api (proxied by Nginx)
-// Mobile dev: fallback to localhost; in prod set EXPO_PUBLIC_API_URL
+// EXPO_PUBLIC_API_URL — full base without /api suffix, e.g. http://45.80.130.211:8000
 const PROD_URL = process.env.EXPO_PUBLIC_API_URL
-const BASE_URL = Platform.OS === 'web'
-  ? (PROD_URL ? `${PROD_URL}/api` : '/api')
-  : (PROD_URL ? `${PROD_URL}/api` : 'http://localhost:8000/api')
+const BASE_URL = PROD_URL
+  ? `${PROD_URL}/api`
+  : Platform.OS === 'web'
+    ? '/api'
+    : 'http://localhost:8000/api'
 
 const api = axios.create({ baseURL: BASE_URL })
 

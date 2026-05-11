@@ -109,9 +109,10 @@ export const DEMO_PREGNANCY = {
 }
 
 export const DEMO_WOMEN_STATUS_FEMALE = {
-  pregnancy: DEMO_PREGNANCY,
+  is_pregnant: true,
+  active_pregnancy: DEMO_PREGNANCY,
   last_cycle: DEMO_CYCLES[0],
-  cycles: DEMO_CYCLES,
+  avg_cycle_length: 28,
 }
 
 // ─── Medical records (for dashboard) ─────────────────────────────────────────

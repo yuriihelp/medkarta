@@ -68,9 +68,10 @@ export interface Pregnancy {
 }
 
 export interface WomenStatus {
-  pregnancy: Pregnancy | null
+  is_pregnant: boolean
+  active_pregnancy: Pregnancy | null
   last_cycle: MenstrualCycle | null
-  cycles: MenstrualCycle[]
+  avg_cycle_length: number
 }
 
 export interface Appointment {

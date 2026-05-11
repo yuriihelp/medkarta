@@ -186,7 +186,7 @@ function MenstrualSection({
     if (!startDate) { Alert.alert('Укажите дату начала'); return }
     setSaving(true)
     try {
-      await womenApi.createCycle(startDate, endDate || undefined)
+      await womenApi.createCycle({ start_date: startDate, end_date: endDate || undefined })
       setShowAddCycle(false)
       setStartDate('')
       setEndDate('')

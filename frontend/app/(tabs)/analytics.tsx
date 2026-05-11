@@ -347,7 +347,7 @@ function DocumentModal({ doc, onClose }: { doc: DemoDocument; onClose: () => voi
           </View>
           <Text style={styles.modalMeta}>{doc.doctor} · {formatDate(doc.date)} · {doc.clinic}</Text>
 
-          <View style={styles.docTags} style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
             {doc.tags.map(tag => {
               const color = tagColor(tag)
               return (

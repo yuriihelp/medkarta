@@ -9,6 +9,8 @@ import { colors, spacing, radius, fontSize } from '@/src/lib/theme'
 import { Card } from '@/components/ui/Card'
 import { womenApi } from '@/src/api/client'
 import { PREGNANCY_WEEKS, calcPregnancyWeek, getWeekData } from '@/src/data/pregnancy_weeks'
+import { isDemoMode, DEMO_WOMEN_STATUS_FEMALE } from '@/src/data/demo'
+import { storage } from '@/src/lib/storage'
 import type { WomenStatus } from '@/src/types'
 
 // ─── Pregnancy tracker ───────────────────────────────────────────────────────
@@ -419,8 +421,14 @@ export default function HealthScreen() {
 
   async function load() {
     try {
-      const res = await womenApi.getStatus()
-      setStatus(res.data)
+      const demo = await isDemoMode(storage)
+      if (demo) {
+        // Female demo user has pregnancy data
+        setStatus(DEMO_WOMEN_STATUS_FEMALE as unknown as WomenStatus)
+      } else {
+        const res = await womenApi.getStatus()
+        setStatus(res.data)
+      }
     } catch {
       // not female or not authenticated — handled by layout
     } finally {

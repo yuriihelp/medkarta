@@ -17,6 +17,7 @@ def register(data: UserCreate, db: Session = Depends(get_db)):
         phone=data.phone,
         hashed_password=hash_password(data.password),
         full_name=data.full_name,
+        gender=data.gender,
     )
     db.add(user)
     db.commit()

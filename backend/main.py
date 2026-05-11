@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import Base, engine
-from app.routers import auth, records, ai, access, marketplace
+from app.routers import auth, records, ai, access, marketplace, women_health, appointments, vaccinations
 
 app = FastAPI(
     title="ПУЛЬС API",
@@ -11,7 +11,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://localhost:8081"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -22,6 +22,9 @@ app.include_router(records.router, prefix="/api")
 app.include_router(ai.router, prefix="/api")
 app.include_router(access.router, prefix="/api")
 app.include_router(marketplace.router, prefix="/api")
+app.include_router(women_health.router, prefix="/api")
+app.include_router(appointments.router, prefix="/api")
+app.include_router(vaccinations.router, prefix="/api")
 
 Base.metadata.create_all(bind=engine)
 

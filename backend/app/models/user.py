@@ -14,7 +14,12 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     full_name = Column(String(200), nullable=False)
     birth_date = Column(Date, nullable=True)
+    gender = Column(String(10), nullable=True)  # 'female' | 'male'
     created_at = Column(DateTime, default=datetime.utcnow)
 
     records = relationship("MedicalRecord", back_populates="user", cascade="all, delete-orphan")
     qr_tokens = relationship("QRToken", back_populates="user", cascade="all, delete-orphan")
+    menstrual_cycles = relationship("MenstrualCycle", back_populates="user", cascade="all, delete-orphan")
+    pregnancies = relationship("Pregnancy", back_populates="user", cascade="all, delete-orphan")
+    appointments = relationship("Appointment", back_populates="user", cascade="all, delete-orphan")
+    vaccination_records = relationship("VaccinationRecord", back_populates="user", cascade="all, delete-orphan")

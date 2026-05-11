@@ -7,6 +7,7 @@ class UserCreate(BaseModel):
     phone: str
     password: str
     full_name: str
+    gender: str | None = None  # 'female' | 'male'
 
 
 class UserLogin(BaseModel):
@@ -19,6 +20,7 @@ class UserRead(BaseModel):
     phone: str
     full_name: str
     birth_date: date | None
+    gender: str | None
     created_at: datetime
 
     model_config = {"from_attributes": True}

@@ -45,3 +45,56 @@ export interface AuthTokens {
   access_token: string
   token_type: string
 }
+
+export interface MenstrualCycle {
+  id: string
+  user_id: string
+  start_date: string
+  end_date: string | null
+  symptoms: string[]
+  notes: string | null
+  created_at: string
+}
+
+export interface Pregnancy {
+  id: string
+  user_id: string
+  lmp_date: string
+  due_date: string
+  is_active: boolean
+  child_name: string | null
+  child_gender: 'unknown' | 'boy' | 'girl' | null
+  created_at: string
+}
+
+export interface WomenStatus {
+  pregnancy: Pregnancy | null
+  last_cycle: MenstrualCycle | null
+  cycles: MenstrualCycle[]
+}
+
+export interface Appointment {
+  id: string
+  user_id: string
+  date: string
+  time: string | null
+  doctor_name: string
+  specialty: string | null
+  clinic: string | null
+  notes: string | null
+  is_done: boolean
+  reminder_sent: boolean
+  created_at: string
+}
+
+export interface VaccinationRecord {
+  id: string
+  user_id: string
+  vaccine_key: string
+  vaccine_name: string
+  dose_number: string
+  date_given: string
+  clinic: string | null
+  batch_number: string | null
+  created_at: string
+}

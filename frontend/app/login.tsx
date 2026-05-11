@@ -16,6 +16,7 @@ export default function LoginScreen() {
   const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
+  const [gender, setGender] = useState<'male' | 'female' | null>(null)
   const [loading, setLoading] = useState(false)
 
   async function submit() {
@@ -24,8 +25,18 @@ export default function LoginScreen() {
     try {
       const res = mode === 'login'
         ? await authApi.login(phone, password)
-        : await authApi.register(phone, password, fullName)
+        : await authApi.register(phone, password, fullName, gender ?? undefined)
       await storage.setItem('access_token', res.data.access_token)
+      if (mode === 'register' && gender) {
+        await storage.setItem('user_gender', gender)
+      }
+      if (mode === 'login') {
+        try {
+          const me = await authApi.me()
+          if (me.data.gender) await storage.setItem('user_gender', me.data.gender)
+          if (me.data.birth_date) await storage.setItem('user_birth_date', me.data.birth_date)
+        } catch { /* ignore */ }
+      }
       router.replace('/(tabs)/')
     } catch {
       Alert.alert('Ошибка', 'Неверный телефон или пароль')
@@ -68,17 +79,36 @@ export default function LoginScreen() {
 
           {/* Fields */}
           {mode === 'register' && (
-            <View style={styles.field}>
-              <Text style={styles.label}>Имя</Text>
-              <TextInput
-                style={styles.input}
-                value={fullName}
-                onChangeText={setFullName}
-                placeholder="Иван Иванов"
-                placeholderTextColor={colors.textMuted}
-                autoCapitalize="words"
-              />
-            </View>
+            <>
+              <View style={styles.field}>
+                <Text style={styles.label}>Имя</Text>
+                <TextInput
+                  style={styles.input}
+                  value={fullName}
+                  onChangeText={setFullName}
+                  placeholder="Иван Иванов"
+                  placeholderTextColor={colors.textMuted}
+                  autoCapitalize="words"
+                />
+              </View>
+              <View style={styles.field}>
+                <Text style={styles.label}>Пол</Text>
+                <View style={styles.genderRow}>
+                  {([['male', 'Мужской'], ['female', 'Женский']] as const).map(([val, label]) => (
+                    <TouchableOpacity
+                      key={val}
+                      style={[styles.genderBtn, gender === val && styles.genderBtnActive]}
+                      onPress={() => setGender(val)}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={[styles.genderText, gender === val && styles.genderTextActive]}>
+                        {label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </>
           )}
 
           <View style={styles.field}>
@@ -205,4 +235,12 @@ const styles = StyleSheet.create({
   submitText: { fontSize: fontSize.md, fontWeight: '700', color: colors.white },
   altBtn: { marginTop: spacing.md, alignItems: 'center' },
   altText: { fontSize: fontSize.sm, color: colors.teal, fontWeight: '600' },
+  genderRow: { flexDirection: 'row', gap: 10 },
+  genderBtn: {
+    flex: 1, paddingVertical: 12, borderRadius: 10, alignItems: 'center',
+    borderWidth: 1.5, borderColor: colors.border, backgroundColor: colors.white,
+  },
+  genderBtnActive: { borderColor: colors.teal, backgroundColor: colors.teal + '15' },
+  genderText: { fontSize: fontSize.sm, fontWeight: '600', color: colors.textMuted },
+  genderTextActive: { color: colors.teal },
 })

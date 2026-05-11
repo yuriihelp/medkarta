@@ -73,3 +73,15 @@ export const shadow = {
     elevation: 4,
   },
 }
+
+// Unified theme object used by analytics/vaccines/calendar screens
+export const theme = {
+  colors: {
+    primary:    colors.teal,
+    background: colors.bg,
+    text:       colors.text,
+    textMuted:  colors.textMuted,
+    border:     colors.border,
+  },
+  shadow,
+}

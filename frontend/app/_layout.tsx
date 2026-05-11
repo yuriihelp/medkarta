@@ -16,7 +16,7 @@ export default function RootLayout() {
       setAuthed(!!token)
       setReady(true)
     })
-  }, [])
+  }, [segments])
 
   useEffect(() => {
     if (!ready) return

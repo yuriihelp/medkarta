@@ -7,15 +7,16 @@ import WebLayout from '@/components/WebLayout'
 import { storage } from '@/src/lib/storage'
 
 const coreTabs = [
-  { name: 'index',       title: 'Дашборд',    icon: 'grid-outline',         iconActive: 'grid' },
-  { name: 'records',     title: 'Медкарта',   icon: 'folder-outline',       iconActive: 'folder' },
-  { name: 'upload',      title: 'Загрузка',   icon: 'cloud-upload-outline', iconActive: 'cloud-upload' },
-  { name: 'ai',          title: 'ИИ',         icon: 'chatbubble-outline',   iconActive: 'chatbubble' },
-  { name: 'vaccines',    title: 'Прививки',   icon: 'shield-outline',       iconActive: 'shield' },
-  { name: 'calendar',   title: 'Календарь',  icon: 'calendar-outline',     iconActive: 'calendar' },
-  { name: 'health',      title: 'Здоровье',   icon: 'heart-outline',        iconActive: 'heart' },
-  { name: 'access',      title: 'QR',         icon: 'qr-code-outline',      iconActive: 'qr-code' },
-  { name: 'marketplace', title: 'Маркет',     icon: 'storefront-outline',   iconActive: 'storefront' },
+  { name: 'index',       title: 'Дашборд',    icon: 'grid-outline',            iconActive: 'grid' },
+  { name: 'records',     title: 'Медкарта',   icon: 'folder-outline',          iconActive: 'folder' },
+  { name: 'analytics',  title: 'Аналитика',  icon: 'bar-chart-outline',       iconActive: 'bar-chart' },
+  { name: 'vaccines',    title: 'Прививки',   icon: 'shield-outline',          iconActive: 'shield' },
+  { name: 'calendar',   title: 'Календарь',  icon: 'calendar-outline',        iconActive: 'calendar' },
+  { name: 'health',      title: 'Здоровье',   icon: 'heart-outline',           iconActive: 'heart' },
+  { name: 'ai',          title: 'ИИ',         icon: 'chatbubble-outline',      iconActive: 'chatbubble' },
+  { name: 'upload',      title: 'Загрузка',   icon: 'cloud-upload-outline',    iconActive: 'cloud-upload' },
+  { name: 'access',      title: 'QR',         icon: 'qr-code-outline',         iconActive: 'qr-code' },
+  { name: 'marketplace', title: 'Маркет',     icon: 'storefront-outline',      iconActive: 'storefront' },
 ]
 
 export default function TabsLayout() {

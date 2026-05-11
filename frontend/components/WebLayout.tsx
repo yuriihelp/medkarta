@@ -10,6 +10,7 @@ const baseNav = [
   { href: '/(tabs)/records',     label: 'Медкарта',     icon: 'folder-outline',       iconActive: 'folder',       female: false },
   { href: '/(tabs)/upload',      label: 'Загрузка',     icon: 'cloud-upload-outline', iconActive: 'cloud-upload', female: false },
   { href: '/(tabs)/ai',          label: 'ИИ-ассистент', icon: 'chatbubble-outline',   iconActive: 'chatbubble',   female: false },
+  { href: '/(tabs)/analytics',   label: 'Аналитика',    icon: 'bar-chart-outline',    iconActive: 'bar-chart',    female: false },
   { href: '/(tabs)/vaccines',    label: 'Прививки',     icon: 'shield-outline',       iconActive: 'shield',       female: false },
   { href: '/(tabs)/calendar',    label: 'Календарь',    icon: 'calendar-outline',     iconActive: 'calendar',     female: false },
   { href: '/(tabs)/health',      label: 'Здоровье',     icon: 'heart-outline',        iconActive: 'heart',        female: true },

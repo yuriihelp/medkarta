@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..models.user import User
 from ..models.record import MedicalRecord
+from ..config import settings
+from ..gigachat import get_gigachat
 from .deps import get_current_user
 
 router = APIRouter(prefix="/ai", tags=["ai"])
@@ -24,22 +26,39 @@ async def chat(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # TODO: integrate GigaChat / YandexGPT with RAG
-    context = ""
+    context_parts = []
+
+    # Attach record context if provided
     if req.record_id:
         record = db.query(MedicalRecord).filter(
             MedicalRecord.id == req.record_id,
             MedicalRecord.user_id == current_user.id,
         ).first()
         if record:
-            context = f"Контекст: {record.title}, {record.date}, {record.summary or ''}"
+            context_parts.append(
+                f"Документ: {record.title}, дата: {record.date}, "
+                f"резюме: {record.summary or 'нет'}"
+            )
 
-    stub_reply = (
-        f"Это демо-режим ИИ-ассистента. "
-        f"Ваш вопрос получен: «{req.message[:80]}». "
-        f"Для реальных ответов подключите GigaChat API в настройках."
-    )
-    return ChatResponse(reply=stub_reply)
+    # Basic user context
+    if current_user.birth_date:
+        context_parts.append(f"Дата рождения пациента: {current_user.birth_date}")
+
+    context = "\n".join(context_parts)
+
+    if not settings.gigachat_api_key:
+        return ChatResponse(
+            reply=(
+                "ИИ-ассистент не настроен. Укажите GIGACHAT_API_KEY в конфигурации сервера."
+            )
+        )
+
+    try:
+        client = get_gigachat(settings.gigachat_api_key)
+        reply = await client.chat(req.message, context=context)
+        return ChatResponse(reply=reply)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"GigaChat error: {str(e)}")
 
 
 @router.post("/interpret/{record_id}")
@@ -48,7 +67,6 @@ async def interpret_record(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # TODO: OCR + AI structuring pipeline
     record = db.query(MedicalRecord).filter(
         MedicalRecord.id == record_id,
         MedicalRecord.user_id == current_user.id,

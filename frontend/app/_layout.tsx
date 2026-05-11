@@ -21,7 +21,8 @@ export default function RootLayout() {
   useEffect(() => {
     if (!ready) return
     const inAuthGroup = segments[0] === 'login'
-    if (!authed && !inAuthGroup) {
+    const inPublicGroup = segments[0] === 'doctor'  // doctor view is public
+    if (!authed && !inAuthGroup && !inPublicGroup) {
       router.replace('/login')
     } else if (authed && inAuthGroup) {
       router.replace('/(tabs)/')

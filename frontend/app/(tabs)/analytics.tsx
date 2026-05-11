@@ -5,10 +5,10 @@ import {
 } from 'react-native'
 import { theme } from '../../src/lib/theme'
 import { storage } from '../../src/lib/storage'
-import { isDemoMode, getDemoGender } from '../../src/data/demo'
+import { getDemoType } from '../../src/data/demo'
 import {
-  DEMO_RECORDS_MALE, DEMO_RECORDS_FEMALE,
-  DEMO_DOCUMENTS_MALE, DEMO_DOCUMENTS_FEMALE,
+  DEMO_RECORDS_MALE, DEMO_RECORDS_FEMALE, DEMO_RECORDS_FEMALE2,
+  DEMO_DOCUMENTS_MALE, DEMO_DOCUMENTS_FEMALE, DEMO_DOCUMENTS_FEMALE2,
   DemoDocument,
 } from '../../src/data/demo'
 
@@ -59,12 +59,18 @@ export default function AnalyticsScreen() {
 
   useEffect(() => {
     ;(async () => {
-      const demo = await isDemoMode(storage)
-      if (demo) {
-        const gender = await getDemoGender(storage)
-        setRecords(gender === 'female' ? DEMO_RECORDS_FEMALE : DEMO_RECORDS_MALE)
-        setDocuments(gender === 'female' ? DEMO_DOCUMENTS_FEMALE : DEMO_DOCUMENTS_MALE)
+      const demoType = await getDemoType(storage)
+      if (demoType === 'female_pregnant') {
+        setRecords(DEMO_RECORDS_FEMALE)
+        setDocuments(DEMO_DOCUMENTS_FEMALE)
+      } else if (demoType === 'female_cycle') {
+        setRecords(DEMO_RECORDS_FEMALE2)
+        setDocuments(DEMO_DOCUMENTS_FEMALE2)
+      } else if (demoType === 'male') {
+        setRecords(DEMO_RECORDS_MALE)
+        setDocuments(DEMO_DOCUMENTS_MALE)
       }
+      // demoType === null → real user, records come from API (not implemented here yet)
     })()
   }, [])
 

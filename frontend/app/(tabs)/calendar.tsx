@@ -8,10 +8,10 @@ import { appointmentsApi, womenApi, vaccinationsApi } from '../../src/api/client
 import { VACCINATION_SCHEDULE } from '../../src/data/vaccination_schedule'
 import { storage } from '../../src/lib/storage'
 import {
-  isDemoMode, getDemoGender,
-  DEMO_APPOINTMENTS_MALE, DEMO_APPOINTMENTS_FEMALE,
-  DEMO_VACCINATIONS_MALE, DEMO_VACCINATIONS_FEMALE,
-  DEMO_CYCLES, DEMO_PREGNANCY,
+  getDemoType,
+  DEMO_APPOINTMENTS_MALE, DEMO_APPOINTMENTS_FEMALE, DEMO_APPOINTMENTS_FEMALE2,
+  DEMO_VACCINATIONS_MALE, DEMO_VACCINATIONS_FEMALE, DEMO_VACCINATIONS_FEMALE2,
+  DEMO_CYCLES, DEMO_CYCLES_FEMALE2, DEMO_PREGNANCY,
 } from '../../src/data/demo'
 
 interface Appointment {
@@ -85,15 +85,19 @@ export default function CalendarScreen() {
     try {
       const storedGender = await storage.getItem('user_gender')
       setGender(storedGender)
-      const demo = await isDemoMode(storage)
-      if (demo) {
-        const demoGender = await getDemoGender(storage)
-        setAppointments(demoGender === 'female' ? DEMO_APPOINTMENTS_FEMALE : DEMO_APPOINTMENTS_MALE)
-        setVaccinations(demoGender === 'female' ? DEMO_VACCINATIONS_FEMALE : DEMO_VACCINATIONS_MALE)
-        if (demoGender === 'female') {
-          setCycles(DEMO_CYCLES)
-          setPregnancy(DEMO_PREGNANCY)
-        }
+      const demoType = await getDemoType(storage)
+      if (demoType === 'male') {
+        setAppointments(DEMO_APPOINTMENTS_MALE)
+        setVaccinations(DEMO_VACCINATIONS_MALE)
+      } else if (demoType === 'female_pregnant') {
+        setAppointments(DEMO_APPOINTMENTS_FEMALE)
+        setVaccinations(DEMO_VACCINATIONS_FEMALE)
+        setCycles(DEMO_CYCLES)
+        setPregnancy(DEMO_PREGNANCY)
+      } else if (demoType === 'female_cycle') {
+        setAppointments(DEMO_APPOINTMENTS_FEMALE2)
+        setVaccinations(DEMO_VACCINATIONS_FEMALE2)
+        setCycles(DEMO_CYCLES_FEMALE2)
       } else {
         const [apptRes, vaccRes] = await Promise.all([
           appointmentsApi.list(),

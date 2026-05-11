@@ -9,7 +9,7 @@ import { colors, spacing, radius, fontSize } from '@/src/lib/theme'
 import { Card } from '@/components/ui/Card'
 import { womenApi } from '@/src/api/client'
 import { PREGNANCY_WEEKS, calcPregnancyWeek, getWeekData } from '@/src/data/pregnancy_weeks'
-import { isDemoMode, DEMO_WOMEN_STATUS_FEMALE } from '@/src/data/demo'
+import { getDemoType, DEMO_WOMEN_STATUS_FEMALE, DEMO_WOMEN_STATUS_FEMALE2 } from '@/src/data/demo'
 import { storage } from '@/src/lib/storage'
 import type { WomenStatus } from '@/src/types'
 
@@ -421,14 +421,16 @@ export default function HealthScreen() {
 
   async function load() {
     try {
-      const demo = await isDemoMode(storage)
-      if (demo) {
-        // Female demo user has pregnancy data
+      const demoType = await getDemoType(storage)
+      if (demoType === 'female_pregnant') {
         setStatus(DEMO_WOMEN_STATUS_FEMALE as unknown as WomenStatus)
-      } else {
+      } else if (demoType === 'female_cycle') {
+        setStatus(DEMO_WOMEN_STATUS_FEMALE2 as unknown as WomenStatus)
+      } else if (demoType === null) {
         const res = await womenApi.getStatus()
         setStatus(res.data)
       }
+      // demoType === 'male' → no women's health screen shown
     } catch {
       // not female or not authenticated — handled by layout
     } finally {

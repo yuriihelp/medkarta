@@ -9,8 +9,9 @@ from ..config import settings
 bearer = HTTPBearer()
 
 DEMO_TOKENS = {
-    "demo_male_token":   {"id": "demo-male",   "full_name": "Иван Петров",   "gender": "male",   "phone": "+79990000001", "birth_date": "1990-05-15"},
-    "demo_female_token": {"id": "demo-female", "full_name": "Мария Иванова", "gender": "female", "phone": "+79990000002", "birth_date": "1995-08-22"},
+    "demo_male_token":    {"id": "demo-male",    "full_name": "Иван Петров",   "gender": "male",   "phone": "+79990000001", "birth_date": "1990-05-15"},
+    "demo_female_token":  {"id": "demo-female",  "full_name": "Мария Иванова", "gender": "female", "phone": "+79990000002", "birth_date": "1995-08-22"},
+    "demo_female2_token": {"id": "demo-female2", "full_name": "Анна Соколова", "gender": "female", "phone": "+79990000003", "birth_date": "1997-07-10"},
 }
 
 

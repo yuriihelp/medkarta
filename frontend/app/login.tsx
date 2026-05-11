@@ -10,7 +10,8 @@ import { colors, spacing, radius, fontSize } from '@/src/lib/theme'
 
 const DEMO_ACCOUNTS = [
   {
-    label: 'Демо: Мужской кабинет',
+    label: 'Мужской кабинет',
+    sub: 'Анализы, прививки, ЭКГ',
     icon: '👨',
     gender: 'male',
     name: 'Иван Петров',
@@ -18,12 +19,22 @@ const DEMO_ACCOUNTS = [
     token: 'demo_male_token',
   },
   {
-    label: 'Демо: Женский кабинет',
-    icon: '👩',
+    label: 'Беременность',
+    sub: '18 недель, II триместр',
+    icon: '🤰',
     gender: 'female',
     name: 'Мария Иванова',
     birth_date: '1995-08-22',
     token: 'demo_female_token',
+  },
+  {
+    label: 'Менструальный цикл',
+    sub: 'Календарь, гормоны',
+    icon: '👩',
+    gender: 'female',
+    name: 'Анна Соколова',
+    birth_date: '1997-07-10',
+    token: 'demo_female2_token',
   },
 ]
 
@@ -83,7 +94,7 @@ export default function LoginScreen() {
           <View style={styles.demoRow}>
             {DEMO_ACCOUNTS.map(acc => (
               <TouchableOpacity
-                key={acc.gender}
+                key={acc.token}
                 style={[
                   styles.demoBtn,
                   acc.gender === 'female' && styles.demoBtnFemale,
@@ -93,9 +104,7 @@ export default function LoginScreen() {
               >
                 <Text style={styles.demoIcon}>{acc.icon}</Text>
                 <Text style={styles.demoBtnText}>{acc.name}</Text>
-                <Text style={styles.demoBtnSub}>
-                  {acc.gender === 'male' ? 'Мужской' : 'Женский'} кабинет
-                </Text>
+                <Text style={styles.demoBtnSub}>{acc.sub}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -176,9 +185,9 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
-  demoRow: { flexDirection: 'row', gap: 10 },
+  demoRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   demoBtn: {
-    flex: 1,
+    width: '47%',
     backgroundColor: 'rgba(255,255,255,0.12)',
     borderRadius: radius.lg,
     padding: 14,

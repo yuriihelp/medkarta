@@ -1,15 +1,15 @@
+import { useEffect, useState } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native'
 import { useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { colors, spacing, radius, fontSize } from '@/src/lib/theme'
 import { Card } from '@/components/ui/Card'
-
-const stats = [
-  { label: 'Записей', value: '0', icon: 'document-text-outline', color: colors.teal },
-  { label: 'Последний анализ', value: '—', icon: 'flask-outline', color: colors.info },
-  { label: 'Назначений', value: '0', icon: 'calendar-outline', color: colors.warning },
-  { label: 'Показателей', value: '0', icon: 'trending-up-outline', color: '#7c3aed' },
-]
+import { storage } from '@/src/lib/storage'
+import {
+  isDemoMode, getDemoGender,
+  DEMO_RECORDS_MALE, DEMO_RECORDS_FEMALE,
+  DEMO_APPOINTMENTS_MALE, DEMO_APPOINTMENTS_FEMALE,
+} from '@/src/data/demo'
 
 const actions = [
   { label: 'Загрузить анализы', desc: 'PDF или фото', href: '/(tabs)/upload', color: colors.teal },
@@ -18,15 +18,103 @@ const actions = [
   { label: 'Найти аптеку', desc: 'Лучшие цены', href: '/(tabs)/marketplace', color: colors.warning },
 ]
 
+interface StatItem {
+  label: string
+  value: string
+  icon: string
+  color: string
+}
+
+interface RecentEvent {
+  id: string
+  type: 'appointment' | 'record'
+  title: string
+  subtitle: string
+  date: string
+  color: string
+}
+
+function formatDateRu(iso: string) {
+  const d = new Date(iso)
+  return `${d.getDate().toString().padStart(2, '0')}.${(d.getMonth() + 1).toString().padStart(2, '0')}.${d.getFullYear()}`
+}
+
 export default function DashboardScreen() {
   const router = useRouter()
+  const [userName, setUserName] = useState<string | null>(null)
+  const [stats, setStats] = useState<StatItem[]>([
+    { label: 'Записей', value: '0', icon: 'document-text-outline', color: colors.teal },
+    { label: 'Последний анализ', value: '—', icon: 'flask-outline', color: colors.info },
+    { label: 'Назначений', value: '0', icon: 'calendar-outline', color: colors.warning },
+    { label: 'Показателей', value: '0', icon: 'trending-up-outline', color: '#7c3aed' },
+  ])
+  const [recentEvents, setRecentEvents] = useState<RecentEvent[]>([])
+
+  useEffect(() => {
+    async function loadDashboard() {
+      const name = await storage.getItem('user_name')
+      setUserName(name)
+
+      const demo = await isDemoMode(storage)
+      if (!demo) return
+
+      const gender = await getDemoGender(storage)
+      const records = gender === 'female' ? DEMO_RECORDS_FEMALE : DEMO_RECORDS_MALE
+      const appointments = gender === 'female' ? DEMO_APPOINTMENTS_FEMALE : DEMO_APPOINTMENTS_MALE
+
+      const now = new Date()
+      const upcoming = appointments.filter(a => new Date(a.date) >= now && !a.is_done)
+        .sort((a, b) => a.date.localeCompare(b.date))
+
+      const analysisRecords = records.filter(r => r.type === 'analysis')
+        .sort((a, b) => b.date.localeCompare(a.date))
+
+      const lastAnalysisDate = analysisRecords.length > 0
+        ? formatDateRu(analysisRecords[0].date)
+        : '—'
+
+      const indicatorsCount = records.reduce((sum, r) => sum + (r.indicators?.length ?? 0), 0)
+
+      setStats([
+        { label: 'Записей', value: String(records.length), icon: 'document-text-outline', color: colors.teal },
+        { label: 'Последний анализ', value: lastAnalysisDate, icon: 'flask-outline', color: colors.info },
+        { label: 'Назначений', value: String(upcoming.length), icon: 'calendar-outline', color: colors.warning },
+        { label: 'Показателей', value: String(indicatorsCount), icon: 'trending-up-outline', color: '#7c3aed' },
+      ])
+
+      const events: RecentEvent[] = [
+        ...upcoming.slice(0, 3).map(a => ({
+          id: a.id,
+          type: 'appointment' as const,
+          title: a.doctor_name,
+          subtitle: [a.specialty, a.clinic].filter(Boolean).join(' · '),
+          date: formatDateRu(a.date) + (a.time ? ` в ${a.time}` : ''),
+          color: '#2dd4bf',
+        })),
+        ...analysisRecords.slice(0, 2).map(r => ({
+          id: r.id,
+          type: 'record' as const,
+          title: r.title,
+          subtitle: r.source ?? '',
+          date: formatDateRu(r.date),
+          color: colors.teal,
+        })),
+      ]
+      setRecentEvents(events)
+    }
+    loadDashboard()
+  }, [])
+
+  const greeting = userName
+    ? `Добро пожаловать, ${userName}`
+    : 'Добро пожаловать'
 
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Добро пожаловать</Text>
+        <Text style={styles.title}>{greeting}</Text>
         <Text style={styles.subtitle}>Ваша медицинская книжка</Text>
       </View>
 
@@ -77,11 +165,31 @@ export default function DashboardScreen() {
 
       {/* Recent */}
       <Text style={styles.sectionTitle}>Последние события</Text>
-      <Card style={styles.emptyCard}>
-        <Ionicons name="time-outline" size={32} color={colors.border} />
-        <Text style={styles.emptyText}>Пока ничего нет</Text>
-        <Text style={styles.emptyHint}>Загрузите первый документ, чтобы начать</Text>
-      </Card>
+      {recentEvents.length === 0 ? (
+        <Card style={styles.emptyCard}>
+          <Ionicons name="time-outline" size={32} color={colors.border} />
+          <Text style={styles.emptyText}>Пока ничего нет</Text>
+          <Text style={styles.emptyHint}>Загрузите первый документ, чтобы начать</Text>
+        </Card>
+      ) : (
+        <Card style={styles.recentCard}>
+          {recentEvents.map((e, i) => (
+            <View key={e.id} style={[styles.recentItem, i < recentEvents.length - 1 && styles.recentItemBorder]}>
+              <View style={[styles.recentDot, { backgroundColor: e.color }]} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.recentTitle}>{e.title}</Text>
+                {!!e.subtitle && <Text style={styles.recentSub}>{e.subtitle}</Text>}
+                <Text style={styles.recentDate}>{e.date}</Text>
+              </View>
+              <View style={[styles.recentTypeBadge, { backgroundColor: e.color + '20' }]}>
+                <Text style={[styles.recentTypeText, { color: e.color }]}>
+                  {e.type === 'appointment' ? 'Приём' : 'Анализ'}
+                </Text>
+              </View>
+            </View>
+          ))}
+        </Card>
+      )}
 
     </ScrollView>
   )
@@ -142,4 +250,14 @@ const styles = StyleSheet.create({
   emptyCard: { alignItems: 'center', gap: spacing.xs, paddingVertical: spacing.xl },
   emptyText: { fontSize: fontSize.md, fontWeight: '600', color: colors.textSecondary },
   emptyHint: { fontSize: fontSize.sm, color: colors.textMuted },
+
+  recentCard: { gap: 0, paddingVertical: 0, paddingHorizontal: 0, overflow: 'hidden' },
+  recentItem: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, padding: spacing.md },
+  recentItemBorder: { borderBottomWidth: 1, borderBottomColor: colors.border },
+  recentDot: { width: 8, height: 8, borderRadius: 4 },
+  recentTitle: { fontSize: fontSize.sm, fontWeight: '600', color: colors.text },
+  recentSub: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 1 },
+  recentDate: { fontSize: fontSize.xs, color: colors.textMuted, marginTop: 2 },
+  recentTypeBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 8 },
+  recentTypeText: { fontSize: fontSize.xs, fontWeight: '600' },
 })

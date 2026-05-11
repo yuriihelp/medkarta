@@ -7,6 +7,7 @@ import { theme } from '../../src/lib/theme'
 import { vaccinationsApi } from '../../src/api/client'
 import { VACCINATION_SCHEDULE, VaccineScheduleItem, VaccineDose } from '../../src/data/vaccination_schedule'
 import { storage } from '../../src/lib/storage'
+import { isDemoMode, getDemoGender, DEMO_VACCINATIONS_MALE, DEMO_VACCINATIONS_FEMALE } from '../../src/data/demo'
 
 interface VaccinationRecord {
   id: string
@@ -36,8 +37,14 @@ export default function VaccinesScreen() {
     try {
       const storedBirth = await storage.getItem('user_birth_date')
       if (storedBirth) setBirthDate(new Date(storedBirth))
-      const res = await vaccinationsApi.list()
-      setRecords(res.data)
+      const demo = await isDemoMode(storage)
+      if (demo) {
+        const gender = await getDemoGender(storage)
+        setRecords(gender === 'female' ? DEMO_VACCINATIONS_FEMALE : DEMO_VACCINATIONS_MALE)
+      } else {
+        const res = await vaccinationsApi.list()
+        setRecords(res.data)
+      }
     } catch {
       // not authenticated or network error
     } finally {
@@ -93,15 +100,28 @@ export default function VaccinesScreen() {
     }
     setSaving(true)
     try {
-      await vaccinationsApi.add({
-        vaccine_key: selectedVaccine.key,
-        vaccine_name: selectedVaccine.name,
-        dose_number: selectedDose.dose,
-        date_given: isoDate,
-        clinic: clinicInput || undefined,
-      })
-      setModalVisible(false)
-      await loadData()
+      const demo = await isDemoMode(storage)
+      if (demo) {
+        const newRecord: VaccinationRecord = {
+          id: String(Date.now()),
+          vaccine_key: selectedVaccine.key,
+          dose_number: selectedDose.dose,
+          date_given: isoDate,
+          clinic: clinicInput || null,
+        }
+        setRecords(prev => [...prev, newRecord])
+        setModalVisible(false)
+      } else {
+        await vaccinationsApi.add({
+          vaccine_key: selectedVaccine.key,
+          vaccine_name: selectedVaccine.name,
+          dose_number: selectedDose.dose,
+          date_given: isoDate,
+          clinic: clinicInput || undefined,
+        })
+        setModalVisible(false)
+        await loadData()
+      }
     } catch {
       Alert.alert('Ошибка', 'Не удалось сохранить запись')
     } finally {

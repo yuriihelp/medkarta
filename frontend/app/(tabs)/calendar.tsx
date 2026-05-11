@@ -7,6 +7,12 @@ import { theme } from '../../src/lib/theme'
 import { appointmentsApi, womenApi, vaccinationsApi } from '../../src/api/client'
 import { VACCINATION_SCHEDULE } from '../../src/data/vaccination_schedule'
 import { storage } from '../../src/lib/storage'
+import {
+  isDemoMode, getDemoGender,
+  DEMO_APPOINTMENTS_MALE, DEMO_APPOINTMENTS_FEMALE,
+  DEMO_VACCINATIONS_MALE, DEMO_VACCINATIONS_FEMALE,
+  DEMO_CYCLES, DEMO_PREGNANCY,
+} from '../../src/data/demo'
 
 interface Appointment {
   id: string
@@ -79,16 +85,27 @@ export default function CalendarScreen() {
     try {
       const storedGender = await storage.getItem('user_gender')
       setGender(storedGender)
-      const [apptRes, vaccRes] = await Promise.all([
-        appointmentsApi.list(),
-        vaccinationsApi.list(),
-      ])
-      setAppointments(apptRes.data)
-      setVaccinations(vaccRes.data)
-      if (storedGender === 'female') {
-        const wRes = await womenApi.getStatus()
-        setCycles(wRes.data.cycles ?? [])
-        setPregnancy(wRes.data.pregnancy)
+      const demo = await isDemoMode(storage)
+      if (demo) {
+        const demoGender = await getDemoGender(storage)
+        setAppointments(demoGender === 'female' ? DEMO_APPOINTMENTS_FEMALE : DEMO_APPOINTMENTS_MALE)
+        setVaccinations(demoGender === 'female' ? DEMO_VACCINATIONS_FEMALE : DEMO_VACCINATIONS_MALE)
+        if (demoGender === 'female') {
+          setCycles(DEMO_CYCLES)
+          setPregnancy(DEMO_PREGNANCY)
+        }
+      } else {
+        const [apptRes, vaccRes] = await Promise.all([
+          appointmentsApi.list(),
+          vaccinationsApi.list(),
+        ])
+        setAppointments(apptRes.data)
+        setVaccinations(vaccRes.data)
+        if (storedGender === 'female') {
+          const wRes = await womenApi.getStatus()
+          setCycles(wRes.data.cycles ?? [])
+          setPregnancy(wRes.data.pregnancy)
+        }
       }
     } catch {
       // not authenticated or network error
@@ -142,16 +159,32 @@ export default function CalendarScreen() {
     }
     setSaving(true)
     try {
-      await appointmentsApi.create({
-        date: isoDate,
-        time: apptTime || undefined,
-        doctor_name: apptDoctor,
-        specialty: apptSpecialty || undefined,
-        clinic: apptClinic || undefined,
-        notes: apptNotes || undefined,
-      })
-      setAddModal(false)
-      await loadData()
+      const demo = await isDemoMode(storage)
+      if (demo) {
+        const newAppt: Appointment = {
+          id: String(Date.now()),
+          date: isoDate,
+          time: apptTime || null,
+          doctor_name: apptDoctor,
+          specialty: apptSpecialty || null,
+          clinic: apptClinic || null,
+          notes: apptNotes || null,
+          is_done: false,
+        }
+        setAppointments(prev => [...prev, newAppt])
+        setAddModal(false)
+      } else {
+        await appointmentsApi.create({
+          date: isoDate,
+          time: apptTime || undefined,
+          doctor_name: apptDoctor,
+          specialty: apptSpecialty || undefined,
+          clinic: apptClinic || undefined,
+          notes: apptNotes || undefined,
+        })
+        setAddModal(false)
+        await loadData()
+      }
     } catch {
       Alert.alert('Ошибка', 'Не удалось сохранить запись')
     } finally {
@@ -168,8 +201,13 @@ export default function CalendarScreen() {
 
   async function deleteAppt(id: string) {
     try {
-      await appointmentsApi.delete(id)
-      setAppointments(prev => prev.filter(a => a.id !== id))
+      const demo = await isDemoMode(storage)
+      if (demo) {
+        setAppointments(prev => prev.filter(a => a.id !== id))
+      } else {
+        await appointmentsApi.delete(id)
+        setAppointments(prev => prev.filter(a => a.id !== id))
+      }
     } catch { /* ignore */ }
   }
 

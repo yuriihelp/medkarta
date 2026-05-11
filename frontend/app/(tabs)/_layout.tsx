@@ -44,25 +44,27 @@ export default function TabsLayout() {
         tabBarLabelStyle: { fontSize: 10, fontWeight: '600' },
       }}
     >
-      {coreTabs.map((t) => (
-        <Tabs.Screen
-          key={t.name}
-          name={t.name}
-          options={{
-            title: t.title,
-            tabBarItemStyle: t.name === 'health' && gender !== 'female'
-              ? { display: 'none' }
-              : undefined,
-            tabBarIcon: ({ focused, color }) => (
-              <Ionicons
-                name={(focused ? t.iconActive : t.icon) as any}
-                size={22}
-                color={color}
-              />
-            ),
-          }}
-        />
-      ))}
+      {coreTabs.map((t) => {
+        const mobileHidden = ['upload', 'ai', 'access', 'marketplace'].includes(t.name)
+        const hiddenOnMobile = mobileHidden || (t.name === 'health' && gender !== 'female')
+        return (
+          <Tabs.Screen
+            key={t.name}
+            name={t.name}
+            options={{
+              title: t.title,
+              tabBarItemStyle: hiddenOnMobile ? { display: 'none' } : undefined,
+              tabBarIcon: ({ focused, color }) => (
+                <Ionicons
+                  name={(focused ? t.iconActive : t.icon) as any}
+                  size={22}
+                  color={color}
+                />
+              ),
+            }}
+          />
+        )
+      })}
     </Tabs>
   )
 }

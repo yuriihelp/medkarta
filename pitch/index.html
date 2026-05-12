@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ПУЛЬС — Инвестиционная презентация 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal:       #0d9488;
+    --teal-dark:  #0f766e;
+    --teal-light: #f0fdfa;
+    --teal-mid:   #99f6e4;
+    --navy:       #0f172a;
+    --navy2:      #1e293b;
+    --white:      #ffffff;
+    --gray:       #f8fafc;
+    --gray2:      #e2e8f0;
+    --text:       #0f172a;
+    --muted:      #64748b;
+    --accent:     #7c3aed;
+    --green:      #16a34a;
+    --orange:     #ea580c;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #e5e7eb;
+    color: var(--text);
+  }
+
+  /* ── SLIDE ─────────────────────────────────────────────── */
+  .slide {
+    width: 297mm;
+    height: 167.5mm;  /* 16:9 A4 landscape */
+    background: white;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    margin: 12px auto;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    page-break-after: always;
+  }
+
+  /* ── PRINT ─────────────────────────────────────────────── */
+  @media print {
+    body { background: white; }
+    .slide { margin: 0; box-shadow: none; page-break-after: always; }
+    .no-print { display: none !important; }
+  }
+  @page { size: A4 landscape; margin: 0; }
+
+  /* ── UTILITIES ─────────────────────────────────────────── */
+  .row    { display: flex; flex-direction: row; }
+  .col    { display: flex; flex-direction: column; }
+  .flex1  { flex: 1; }
+  .gap4   { gap: 4px; }  .gap8   { gap: 8px; }
+  .gap12  { gap: 12px; } .gap16  { gap: 16px; }
+  .gap20  { gap: 20px; } .gap24  { gap: 24px; }
+  .center { align-items: center; justify-content: center; }
+  .bold   { font-weight: 700; }
+  .white  { color: white; }
+
+  /* ── BRAND ELEMENTS ────────────────────────────────────── */
+  .logo { font-size: 22px; font-weight: 900; letter-spacing: -1px; color: var(--teal); }
+  .logo-white { color: white; }
+  .logo-sub { font-size: 10px; color: var(--muted); font-weight: 500; margin-top: 1px; letter-spacing: 0.5px; text-transform: uppercase; }
+
+  .slide-num {
+    position: absolute; bottom: 14px; right: 20px;
+    font-size: 10px; color: rgba(255,255,255,0.35); font-weight: 500;
+  }
+  .slide-num-dark { color: var(--gray2); }
+
+  .tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 100px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase;
+  }
+  .tag-teal   { background: var(--teal-light); color: var(--teal-dark); }
+  .tag-navy   { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
+  .tag-purple { background: #ede9fe; color: #5b21b6; }
+
+  .divider { width: 48px; height: 3px; background: var(--teal); border-radius: 2px; margin: 10px 0; }
+  .divider-white { background: rgba(255,255,255,0.4); }
+
+  /* ── CARDS ─────────────────────────────────────────────── */
+  .card {
+    background: var(--gray); border-radius: 14px;
+    padding: 20px; border: 1px solid var(--gray2);
+  }
+  .card-dark {
+    background: rgba(255,255,255,0.07); border-radius: 14px;
+    padding: 18px; border: 1px solid rgba(255,255,255,0.1);
+  }
+  .card-teal {
+    background: var(--teal-light); border-radius: 14px;
+    padding: 18px; border: 1px solid var(--teal-mid);
+  }
+
+  /* ── SLIDE HEADERS ─────────────────────────────────────── */
+  .slide-label {
+    font-size: 10px; font-weight: 700; color: var(--teal);
+    text-transform: uppercase; letter-spacing: 1.2px;
+    margin-bottom: 6px;
+  }
+  .slide-title {
+    font-size: 28px; font-weight: 800; color: var(--navy); line-height: 1.15;
+  }
+  .slide-title-lg {
+    font-size: 34px; font-weight: 900; color: var(--navy); line-height: 1.1;
+  }
+  .slide-sub {
+    font-size: 13px; color: var(--muted); line-height: 1.6; margin-top: 8px;
+  }
+
+  /* ── ICON CIRCLE ───────────────────────────────────────── */
+  .icon-circle {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .ic-teal   { background: var(--teal-light); }
+  .ic-navy   { background: rgba(255,255,255,0.1); }
+  .ic-purple { background: #ede9fe; }
+  .ic-green  { background: #dcfce7; }
+  .ic-orange { background: #ffedd5; }
+
+  /* ── STAT BOX ──────────────────────────────────────────── */
+  .stat-box {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 4px; padding: 18px 12px;
+    border-radius: 14px; text-align: center;
+  }
+  .stat-num  { font-size: 32px; font-weight: 900; line-height: 1; }
+  .stat-unit { font-size: 13px; font-weight: 600; }
+  .stat-label{ font-size: 10px; font-weight: 500; line-height: 1.3; }
+
+  /* ─────────────────────────────────────────────────────────
+   * SLIDE 1 — COVER
+   * ───────────────────────────────────────────────────────── */
+  #s1 { background: linear-gradient(135deg, var(--navy) 0%, #0c2340 60%, #0f3460 100%); }
+  #s1 .glow {
+    position: absolute; top: -80px; right: -80px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(13,148,136,0.35) 0%, transparent 70%);
+  }
+  #s1 .glow2 {
+    position: absolute; bottom: -60px; left: 120px;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,58,237,0.2) 0%, transparent 70%);
+  }
+  #s1 .content {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; padding: 52px 64px;
+    position: relative; z-index: 1;
+  }
+  #s1 .eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--teal); margin-bottom: 14px;
+  }
+  #s1 h1 {
+    font-size: 72px; font-weight: 900; color: white; letter-spacing: -3px;
+    line-height: 1; margin-bottom: 10px;
+  }
+  #s1 .tagline {
+    font-size: 20px; font-weight: 400; color: rgba(255,255,255,0.65);
+    margin-bottom: 32px; line-height: 1.4;
+  }
+  #s1 .meta { display: flex; gap: 24px; align-items: center; }
+  #s1 .meta-item { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 500; }
+  #s1 .meta-sep { width: 1px; height: 16px; background: rgba(255,255,255,0.15); }
+
+  #s1 .right {
+    width: 280px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 10px;
+    padding: 32px; position: relative; z-index: 1;
+  }
+  #s1 .phone-mock {
+    width: 140px; background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(255,255,255,0.12); border-radius: 28px;
+    padding: 16px 12px; display: flex; flex-direction: column; gap: 8px;
+  }
+  #s1 .mock-bar { height: 6px; border-radius: 3px; background: rgba(255,255,255,0.15); }
+  #s1 .mock-bar.teal { background: var(--teal); opacity: 0.7; }
+  #s1 .mock-bar.short { width: 60%; }
+  #s1 .mock-card {
+    background: rgba(255,255,255,0.06); border-radius: 10px; padding: 10px;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  #s1 .mock-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--teal); opacity: 0.6; }
+  #s1 .mock-line { height: 4px; border-radius: 2px; background: rgba(255,255,255,0.12); }
+
+  /* ─────────────────────────────────────────────────────────
+   * SLIDE 2 — ПРОБЛЕМА
+   * ───────────────────────────────────────────────────────── */
+  #s2 .inner { display: flex; flex: 1; }
+  #s2 .left {
+    width: 240px; background: var(--navy);
+    padding: 40px 32px; display: flex; flex-direction: column; justify-content: center; gap: 8px;
+  }
+  #s2 .right { flex: 1; padding: 40px 40px; display: flex; flex-direction: column; gap: 18px; }
+  #s2 .pain {
+    display: flex; align-items: flex-start; gap: 16px;
+    background: white; border-radius: 14px; padding: 18px 20px;
+    border: 1px solid var(--gray2); border-left: 3px solid var(--teal);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  #s2 .pain h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  #s2 .pain p  { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+  #s2 .stat-row { display: flex; gap: 12px; margin-top: auto; }
+  #s2 .mini-stat {
+    flex: 1; text-align: center; background: var(--gray);
+    border-radius: 12px; padding: 12px 8px;
+  }
+  #s2 .mini-stat .n { font-size: 22px; font-weight: 900; color: var(--teal); }
+  #s2 .mini-stat .l { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.3; font-weight: 500; }
+
+  /* ─────────────────────────────────────────────────────────
+   * SLIDE 3 — РЕШЕНИЕ
+   * ───────────────────────────────────────────────────────── */
+  #s3 { background: linear-gradient(160deg, var(--navy) 0%, #0c3044 100%); }
+  #s3 .inner {
+    flex: 1; display: flex; padding: 44px 56px; gap: 40px; align-items: center;
+  }
+  #s3 .left { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  #s3 .feature {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.06); border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  #s3 .feature h3 { font-size: 13px; font-weight: 700; color: white; margin-bottom: 3px; }
+  #s3 .feature p  { font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.45; }
+  #s3 .right { width: 240px; display: flex; flex-direction: column; gap: 12px; }
+  #s3 .big-stat {
+    background: var(--teal); border-radius: 16px; padding: 22px 20px;
+    text-align: center;
+  }
+  #s3 .big-stat .n { font-size: 40px; font-weight: 900; color: white; line-height: 1; }
+  #s3 .big-stat .l { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 4px; line-height: 1.3; }
+  #s3 .mini-cards { display: flex; flex-direction: column; gap: 8px; }
+  #s3 .mini-card {
+    background: rgba(255,255,255,0.07); border-radius: 12px; padding: 12px 14px;
+    border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px;
+  }
+  #s3 .mini-card .em { font-size: 20px; }
+  #s3 .mini-card .t { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.85); }
+
+  /* ─────────────────────────────────────────────────────────
+   * SLIDE 4 — ПРОДУКТ
+   * ───────────────────────────────────────────────────────── */
+  #s4 .inner { flex: 1; display: flex; gap: 0; }
+  #s4 .left {
+    width: 260px; background: var(--teal-light);
+    padding: 40px 32px; border-right: 1px solid var(--teal-mid);
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  #s4 .screen-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  }
+  #s4 .screen {
+    background: white; border-radius: 12px; padding: 14px;
+    border: 1px solid var(--gray2); box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  #s4 .screen .icon { font-size: 24px; }
+  #s4 .screen h4 { font-size: 12px; font-weight: 700; color: var(--navy); }
+  #s4 .screen p  { font-size: 10.5px; color: var(--muted); line-height: 1.4; }
+  #s4 .right { flex: 1; padding: 40px 36px; display: flex; flex-direction: column; gap: 16px; }
+
+  /* ─────────────────────────────────────────────────────────
+   * SLIDE 5 — РЫНОК
+   * ───────────────────────────────────────────────────────── */
+  #s5 { background: var(--navy); }
+  #s5 .inner { flex: 1; display: flex; padding: 44px 56px; gap: 40px; align-items: center; }
+  #s5 .circles { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+  #s5 .market-row {
+    display: flex; align-items: center; gap: 16px;
+  }
+  #s5 .circle {
+    border-radius: 50%; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+  #s5 .circle .n { font-weight: 900; color: white; line-height: 1; }
+  #s5 .circle .u { font-size: 9px; color: rgba(255,255,255,0.6); font-weight: 500; }
+  #s5 .circle-label { flex: 1; }
+  #s5 .circle-label .name { font-size: 13px; font-weight: 700; color: white; }
+  #s5 .circle-label .desc { font-size: 10.5px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+  #s5 .right { width: 260px; display: flex; flex-direction: column; gap: 10px; }
+  #s5 .market-fact {
+    background: rgba(255,255,255,0.07); border-radius: 12px; padding: 14px 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  #s5 .market-fact .n { font-size: 24px; font-weight: 900; color: var(--teal); }
+  #s5 .market-fact .l { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 2px; line-height: 1.4; }
+
+  /* ─────────────────────────────────────────────────────────
+   * SLIDE 6 — БИЗНЕС-МОДЕЛЬ
+   * ───────────────────────────────────────────────────────── */
+  #s6 .inner { flex: 1; padding: 40px 52px; display: flex; flex-direction: column; gap: 20px; }
+  #s6 .tiers { display: flex; gap: 14px; }
+  #s6 .tier {
+    flex: 1; border-radius: 16px; padding: 22px 18px;
+    display: flex; flex-direction: column; gap: 10px;
+    border: 1.5px solid var(--gray2);
+  }
+  #s6 .tier.highlight {
+    background: var(--teal); border-color: var(--teal);
+  }
+  #s6 .tier h3 { font-size: 15px; font-weight: 800; }
+  #s6 .tier .price { font-size: 24px; font-weight: 900; line-height: 1; }
+  #s6 .tier .price-sub { font-size: 10px; font-weight: 500; opacity: 0.7; }
+  #s6 .tier ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  #s6 .tier ul li { font-size: 11px; display: flex; align-items: flex-start; gap: 6px; }
+  #s6 .tier ul li::before { content: "✓"; font-weight: 700; font-size: 10px; margin-top: 1px; flex-shrink: 0; }
+  #s6 .tier.highlight h3, #s6 .tier.highlight .price, #s6 .tier.highlight ul li { color: white; }
+  #s6 .tier.highlight ul li::before { color: rgba(255,255,255,0.7); }
+  #s6 .tier:not(.highlight) h3 { color: var(--navy); }
+  #s6 .tier:not(.highlight) .price { color: var(--teal); }
+  #s6 .tier:not(.highlight) ul li { color: var(--muted); }
+  #s6 .tier:not(.highlight) ul li::before { color: var(--teal); }
+  #s6 .bottom-row { display: flex; gap: 14px; }
+  #s6 .b2b-card {
+    flex: 1; background: var(--gray); border-radius: 12px; padding: 14px 16px;
+    border: 1px solid var(--gray2); display: flex; align-items: center; gap: 12px;
+  }
+  #s6 .b2b-card .em { font-size: 26px; }
+  #s6 .b2b-card h4 { font-size: 12px; font-weight: 700; color: var(--navy); }
+  #s6 .b2b-card p  { font-size: 10.5px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+
+  /* ─────────────────────────────────────────────────────────
+   * SLIDE 7 — КОНКУРЕНТЫ
+   * ───────────────────────────────────────────────────────── */
+  #s7 .inner { flex: 1; padding: 36px 52px; display: flex; flex-direction: column; gap: 16px; }
+  #s7 table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  #s7 thead tr { background: var(--navy); color: white; }
+  #s7 thead th { padding: 10px 14px; text-align: left; font-weight: 700; font-size: 11px; }
+  #s7 thead th:first-child { border-radius: 10px 0 0 0; }
+  #s7 thead th:last-child  { border-radius: 0 10px 0 0; }
+  #s7 tbody tr { border-bottom: 1px solid var(--gray2); }
+  #s7 tbody tr.puls { background: var(--teal-light); font-weight: 700; }
+  #s7 tbody td { padding: 10px 14px; color: var(--text); }
+  #s7 tbody tr.puls td { color: var(--teal-dark); }
+  #s7 .check { color: var(--green); font-weight: 700; }
+  #s7 .cross { color: #94a3b8; }
+  #s7 .part  { color: var(--orange); }
+
+  /* ─────────────────────────────────────────────────────────
+   * SLIDE 8 — ROADMAP
+   * ───────────────────────────────────────────────────────── */
+  #s8 { background: linear-gradient(160deg, #0f172a 0%, #0c3044 100%); }
+  #s8 .inner { flex: 1; padding: 44px 56px; display: flex; flex-direction: column; gap: 24px; }
+  #s8 .timeline { display: flex; gap: 0; flex: 1; }
+  #s8 .phase {
+    flex: 1; display: flex; flex-direction: column; gap: 12px;
+    padding: 0 16px 0 0;
+    border-right: 1px solid rgba(255,255,255,0.08);
+  }
+  #s8 .phase:last-child { border-right: none; }
+  #s8 .phase-head {
+    display: flex; align-items: center; gap: 8px;
+  }
+  #s8 .phase-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  #s8 .phase-date { font-size: 10px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.8px; }
+  #s8 .phase-title { font-size: 15px; font-weight: 800; color: white; }
+  #s8 .phase ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  #s8 .phase ul li {
+    font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.4;
+    padding-left: 12px; position: relative;
+  }
+  #s8 .phase ul li::before { content: "→"; position: absolute; left: 0; color: var(--teal); font-size: 10px; }
+  #s8 .phase.done .phase-dot { background: var(--teal); }
+  #s8 .phase.now  .phase-dot { background: white; box-shadow: 0 0 0 3px rgba(255,255,255,0.2); }
+  #s8 .phase.next .phase-dot { background: rgba(255,255,255,0.2); border: 1.5px solid rgba(255,255,255,0.3); }
+  #s8 .phase.far  .phase-dot { background: rgba(255,255,255,0.1); border: 1.5px dashed rgba(255,255,255,0.2); }
+
+  /* ─────────────────────────────────────────────────────────
+   * SLIDE 9 — КОМАНДА
+   * ───────────────────────────────────────────────────────── */
+  #s9 .inner { flex: 1; padding: 40px 52px; display: flex; flex-direction: column; gap: 20px; }
+  #s9 .team-grid { display: flex; gap: 16px; }
+  #s9 .member {
+    flex: 1; background: var(--gray); border-radius: 16px; padding: 20px 16px;
+    border: 1px solid var(--gray2); display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center;
+  }
+  #s9 .avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 900; color: white; flex-shrink: 0;
+  }
+  #s9 .member h3 { font-size: 13px; font-weight: 800; color: var(--navy); }
+  #s9 .member .role { font-size: 11px; color: var(--teal); font-weight: 700; }
+  #s9 .member p { font-size: 10.5px; color: var(--muted); line-height: 1.45; }
+  #s9 .advisors {
+    background: var(--teal-light); border-radius: 12px; padding: 14px 18px;
+    border: 1px solid var(--teal-mid); display: flex; align-items: center; gap: 14px;
+  }
+  #s9 .advisors p { font-size: 11.5px; color: var(--teal-dark); line-height: 1.5; }
+
+  /* ─────────────────────────────────────────────────────────
+   * SLIDE 10 — ФИНАНСЫ / ЗАПРОС
+   * ───────────────────────────────────────────────────────── */
+  #s10 { background: linear-gradient(135deg, var(--navy) 0%, #0c2340 60%, #1a0540 100%); }
+  #s10 .inner { flex: 1; display: flex; padding: 44px 56px; gap: 40px; align-items: center; }
+  #s10 .left { flex: 1; display: flex; flex-direction: column; gap: 18px; }
+  #s10 h2 { font-size: 36px; font-weight: 900; color: white; line-height: 1.1; }
+  #s10 .ask-amount {
+    font-size: 56px; font-weight: 900; line-height: 1;
+    background: linear-gradient(90deg, var(--teal), #34d399);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  #s10 .use-of-funds { display: flex; flex-direction: column; gap: 8px; }
+  #s10 .fund-row { display: flex; align-items: center; gap: 10px; }
+  #s10 .fund-bar-wrap { flex: 1; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; }
+  #s10 .fund-bar { height: 6px; border-radius: 3px; background: var(--teal); }
+  #s10 .fund-label { font-size: 11px; color: rgba(255,255,255,0.7); width: 160px; }
+  #s10 .fund-pct { font-size: 11px; font-weight: 700; color: var(--teal); width: 36px; text-align: right; }
+  #s10 .right { width: 280px; display: flex; flex-direction: column; gap: 10px; }
+  #s10 .kpi-card {
+    background: rgba(255,255,255,0.07); border-radius: 14px; padding: 16px 18px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  #s10 .kpi-card .year { font-size: 10px; color: rgba(255,255,255,0.45); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  #s10 .kpi-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  #s10 .kpi-row .k { font-size: 11px; color: rgba(255,255,255,0.55); }
+  #s10 .kpi-row .v { font-size: 13px; font-weight: 800; color: white; }
+
+  /* ─────────────────────────────────────────────────────────
+   * SLIDE 11 — КОНТАКТЫ (BACK)
+   * ───────────────────────────────────────────────────────── */
+  #s11 { background: var(--teal); }
+  #s11 .inner {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 16px;
+    padding: 48px;
+  }
+  #s11 h1 { font-size: 64px; font-weight: 900; color: white; letter-spacing: -2px; }
+  #s11 .tagline { font-size: 18px; color: rgba(255,255,255,0.75); font-weight: 400; }
+  #s11 .contacts { display: flex; gap: 32px; margin-top: 16px; }
+  #s11 .contact { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  #s11 .contact .ic { font-size: 18px; }
+  #s11 .contact .val { font-size: 13px; font-weight: 600; color: white; }
+  #s11 .contact .lbl { font-size: 10px; color: rgba(255,255,255,0.55); }
+  #s11 .divider-h { width: 1px; height: 40px; background: rgba(255,255,255,0.2); }
+
+  /* ── PRINT BUTTON ──────────────────────────────────────── */
+  .print-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--navy); padding: 10px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .print-bar .logo-row { display: flex; align-items: center; gap: 10px; }
+  .print-btn {
+    background: var(--teal); color: white; border: none; cursor: pointer;
+    padding: 9px 22px; border-radius: 8px; font-size: 13px; font-weight: 700;
+    font-family: inherit; display: flex; align-items: center; gap: 8px;
+  }
+  .print-btn:hover { background: var(--teal-dark); }
+  .print-hint { font-size: 11px; color: rgba(255,255,255,0.45); }
+  .slides-wrap { margin-top: 60px; padding: 24px 0; }
+  @media print { .print-bar { display: none; } .slides-wrap { margin-top: 0; padding: 0; } }
+</style>
+</head>
+<body>
+
+<!-- ── TOOLBAR ── -->
+<div class="print-bar no-print">
+  <div class="logo-row">
+    <span class="logo logo-white" style="font-size:18px;">ПУЛЬС</span>
+    <span class="print-hint">Инвестиционная презентация · 2026</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <span class="print-hint">Файл → Печать → Сохранить как PDF (альбомная ориентация, без полей)</span>
+    <button class="print-btn" onclick="window.print()">
+      🖨 Сохранить PDF
+    </button>
+  </div>
+</div>
+
+<div class="slides-wrap">
+
+<!-- ══════════════════════════════════════════════════════════
+     СЛАЙД 1 — ОБЛОЖКА
+════════════════════════════════════════════════════════════ -->
+<div class="slide" id="s1">
+  <div class="glow"></div>
+  <div class="glow2"></div>
+  <div class="content">
+    <div class="eyebrow">Инвестиционная презентация · Seed Round · 2026</div>
+    <h1>ПУЛЬС</h1>
+    <div class="tagline">Единая цифровая медицинская книжка<br>для каждого жителя России и СНГ</div>
+    <div class="meta">
+      <span class="meta-item">📍 Россия / СНГ</span>
+      <div class="meta-sep"></div>
+      <span class="meta-item">💊 HealthTech · MedTech</span>
+      <div class="meta-sep"></div>
+      <span class="meta-item">📱 iOS · Android · Web</span>
+    </div>
+  </div>
+  <div class="right">
+    <div class="phone-mock">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+        <div style="width:24px;height:24px;border-radius:50%;background:var(--teal);opacity:0.7;"></div>
+        <div style="flex:1;">
+          <div class="mock-bar" style="width:70%;margin-bottom:3px;"></div>
+          <div class="mock-bar short"></div>
+        </div>
+      </div>
+      <div class="mock-card">
+        <div style="display:flex;gap:4px;align-items:center;">
+          <div style="width:6px;height:6px;border-radius:50%;background:#16a34a;"></div>
+          <div class="mock-bar" style="width:50%;height:3px;"></div>
+        </div>
+        <div class="mock-line"></div>
+        <div class="mock-bar teal" style="width:80%;height:3px;"></div>
+      </div>
+      <div style="display:flex;gap:4px;">
+        <div class="mock-card" style="flex:1;"><div class="mock-dot"></div><div class="mock-line" style="margin-top:4px;"></div></div>
+        <div class="mock-card" style="flex:1;"><div style="width:20px;height:20px;border-radius:50%;background:#7c3aed;opacity:0.5;"></div><div class="mock-line" style="margin-top:4px;"></div></div>
+      </div>
+      <div class="mock-card">
+        <div class="mock-bar teal" style="width:60%;margin-bottom:3px;"></div>
+        <div class="mock-line"></div>
+        <div class="mock-line" style="width:70%;"></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">1 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     СЛАЙД 2 — ПРОБЛЕМА
+════════════════════════════════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="inner">
+    <div class="left">
+      <div class="tag tag-navy" style="margin-bottom:8px;">Проблема</div>
+      <div style="font-size:26px;font-weight:900;color:white;line-height:1.1;margin-bottom:10px;">
+        Медицина хранится<br>в бумажках и<br>разных кабинетах
+      </div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5);line-height:1.6;">
+        147 млн жителей России не имеют единого хранилища своих медицинских данных
+      </div>
+    </div>
+    <div class="right">
+      <div class="pain">
+        <div class="icon-circle ic-teal">📂</div>
+        <div>
+          <h3>Данные разбросаны по клиникам</h3>
+          <p>Анализы из ЛИС, снимки из PACS, справки на бумаге — у каждого врача только его часть истории. Пациент не видит полной картины.</p>
+        </div>
+      </div>
+      <div class="pain">
+        <div class="icon-circle ic-teal">🔄</div>
+        <div>
+          <h3>Нет преемственности лечения</h3>
+          <p>При переходе между клиниками или регионами история болезни теряется. Врачи назначают одни и те же анализы повторно.</p>
+        </div>
+      </div>
+      <div class="pain">
+        <div class="icon-circle ic-teal">🧠</div>
+        <div>
+          <h3>Данные есть — понять нельзя</h3>
+          <p>Результаты анализов написаны медицинским языком. Пациент не знает, что означают показатели, что опасно, что в норме.</p>
+        </div>
+      </div>
+      <div class="stat-row">
+        <div class="mini-stat"><div class="n">73%</div><div class="l">россиян хранят анализы в бумажном виде</div></div>
+        <div class="mini-stat"><div class="n">4+</div><div class="l">разных клиник посещает пациент за год</div></div>
+        <div class="mini-stat"><div class="n">58%</div><div class="l">повторных анализов назначаются из-за потери данных</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num slide-num-dark">2 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     СЛАЙД 3 — РЕШЕНИЕ
+════════════════════════════════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="inner">
+    <div class="left">
+      <div class="tag tag-navy" style="margin-bottom:14px;">Решение</div>
+      <div style="font-size:28px;font-weight:900;color:white;line-height:1.15;margin-bottom:10px;">
+        ПУЛЬС — личная<br>медицинская книжка<br>в смартфоне
+      </div>
+      <div style="font-size:11.5px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:16px;">
+        Один аккаунт — все анализы, заключения, прививки и записи к врачу на любом устройстве
+      </div>
+      <div class="feature">
+        <div class="icon-circle ic-navy">📊</div>
+        <div><h3>ИИ-расшифровка анализов</h3><p>Гигачат объясняет результаты простым языком, выделяет отклонения, даёт рекомендации</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon-circle ic-navy">🔗</div>
+        <div><h3>Ссылка для врача</h3><p>Один клик — врач видит всю карту пациента в браузере без регистрации. Безопасно и удобно</p></div>
+      </div>
+      <div class="feature">
+        <div class="icon-circle ic-navy">🤰</div>
+        <div><h3>Женское здоровье</h3><p>Трекер беременности по неделям, менструальный календарь, прогноз овуляции</p></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="big-stat">
+        <div class="n">8</div>
+        <div class="l">модулей в одном приложении: карта, ИИ, аналитика, прививки, календарь, женское здоровье, справочник, маркетплейс</div>
+      </div>
+      <div class="mini-cards">
+        <div class="mini-card"><span class="em">📱</span><span class="t">iOS · Android · Web</span></div>
+        <div class="mini-card"><span class="em">🇷🇺</span><span class="t">Гигачат · Российский ИИ</span></div>
+        <div class="mini-card"><span class="em">🔒</span><span class="t">Данные на российских серверах</span></div>
+        <div class="mini-card"><span class="em">⚡</span><span class="t">MVP готов · работающий прототип</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">3 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     СЛАЙД 4 — ПРОДУКТ
+════════════════════════════════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="inner">
+    <div class="left">
+      <div class="tag tag-teal" style="margin-bottom:12px;">Продукт</div>
+      <div style="font-size:22px;font-weight:900;color:var(--teal-dark);line-height:1.2;margin-bottom:10px;">
+        Готовый MVP с реальными пользовательскими сценариями
+      </div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:16px;">
+        Рабочий прототип развёрнут на сервере. Демонстрация по трём сценариям: мужской профиль, беременность, менструальный цикл.
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:auto;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:8px;height:8px;border-radius:50%;background:#16a34a;flex-shrink:0;"></div>
+          <span style="font-size:11px;color:var(--muted);">React Native · Expo · TypeScript</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:8px;height:8px;border-radius:50%;background:#16a34a;flex-shrink:0;"></div>
+          <span style="font-size:11px;color:var(--muted);">FastAPI · PostgreSQL · Docker</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:8px;height:8px;border-radius:50%;background:#16a34a;flex-shrink:0;"></div>
+          <span style="font-size:11px;color:var(--muted);">Гигачат API · Nginx · Облако</span>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="screen-row">
+        <div class="screen">
+          <div class="icon">📋</div>
+          <h4>Медкарта</h4>
+          <p>Все анализы, заключения, снимки в одном месте с умной фильтрацией</p>
+        </div>
+        <div class="screen">
+          <div class="icon">🤖</div>
+          <h4>ИИ-ассистент</h4>
+          <p>Гигачат отвечает на вопросы по здоровью и расшифровывает анализы</p>
+        </div>
+        <div class="screen">
+          <div class="icon">📈</div>
+          <h4>Аналитика</h4>
+          <p>Графики динамики показателей, теги по диагнозам, история</p>
+        </div>
+        <div class="screen">
+          <div class="icon">💉</div>
+          <h4>Прививки</h4>
+          <p>Прививочная книжка по национальному календарю РФ</p>
+        </div>
+        <div class="screen">
+          <div class="icon">📅</div>
+          <h4>Календарь</h4>
+          <p>Записи к врачам, прививки и женский цикл на одном календаре</p>
+        </div>
+        <div class="screen">
+          <div class="icon">🔗</div>
+          <h4>Доступ для врача</h4>
+          <p>Ссылка с картой пациента открывается в браузере без входа</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num slide-num-dark">4 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     СЛАЙД 5 — РЫНОК
+════════════════════════════════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="inner">
+    <div class="circles">
+      <div class="tag tag-navy" style="margin-bottom:16px;">Объём рынка</div>
+      <div class="market-row">
+        <div class="circle" style="width:100px;height:100px;background:rgba(13,148,136,0.15);border-color:rgba(13,148,136,0.3);">
+          <span class="n" style="font-size:20px;">₽580</span>
+          <span class="u">млрд</span>
+        </div>
+        <div class="circle-label" style="padding-left:16px;">
+          <div class="name">TAM — Цифровое здравоохранение РФ</div>
+          <div class="desc">Весь рынок цифровых медицинских сервисов России (2025 г., рост +18%/год)</div>
+        </div>
+      </div>
+      <div style="width:1px;height:1px;border-left:1px dashed rgba(255,255,255,0.15);margin-left:50px;height:10px;"></div>
+      <div class="market-row">
+        <div class="circle" style="width:76px;height:76px;background:rgba(13,148,136,0.25);border-color:rgba(13,148,136,0.5);">
+          <span class="n" style="font-size:16px;">₽82</span>
+          <span class="u">млрд</span>
+        </div>
+        <div class="circle-label" style="padding-left:16px;">
+          <div class="name">SAM — Управление медданными и PHR</div>
+          <div class="desc">Персональные медицинские записи, телемедицина, ИИ-диагностика</div>
+        </div>
+      </div>
+      <div style="width:1px;border-left:1px dashed rgba(255,255,255,0.15);margin-left:38px;height:10px;"></div>
+      <div class="market-row">
+        <div class="circle" style="width:54px;height:54px;background:var(--teal);border-color:var(--teal);">
+          <span class="n" style="font-size:13px;">₽8</span>
+          <span class="u">млрд</span>
+        </div>
+        <div class="circle-label" style="padding-left:16px;">
+          <div class="name">SOM — Наша цель к 2028 году</div>
+          <div class="desc">500 000 платных пользователей + B2B клиники + маркетплейс</div>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="market-fact">
+        <div class="n">147 млн</div>
+        <div class="l">человек в России — потенциальная аудитория. Каждый является пациентом</div>
+      </div>
+      <div class="market-fact">
+        <div class="n">+18%</div>
+        <div class="l">ежегодный рост рынка цифрового здравоохранения РФ в 2023–2026 гг.</div>
+      </div>
+      <div class="market-fact">
+        <div class="n">₽2,6 трлн</div>
+        <div class="l">расходы россиян на здравоохранение в 2024 году (Росстат)</div>
+      </div>
+      <div class="market-fact">
+        <div class="n">СНГ +270 млн</div>
+        <div class="l">дополнительная аудитория для масштабирования: Казахстан, Беларусь, Узбекистан</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">5 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     СЛАЙД 6 — БИЗНЕС-МОДЕЛЬ
+════════════════════════════════════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="inner">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <div>
+        <div class="slide-label">Монетизация</div>
+        <div style="font-size:26px;font-weight:900;color:var(--navy);">Многоуровневая бизнес-модель</div>
+      </div>
+      <div class="tag tag-teal">3 потока выручки</div>
+    </div>
+    <div class="tiers">
+      <div class="tier">
+        <div style="font-size:26px;">🆓</div>
+        <h3>Базовый</h3>
+        <div class="price">Бесплатно</div>
+        <div style="width:100%;height:1px;background:var(--gray2);"></div>
+        <ul>
+          <li>До 20 документов</li>
+          <li>Базовый ИИ (5 запросов/мес)</li>
+          <li>Прививочная книжка</li>
+          <li>Менструальный календарь</li>
+        </ul>
+      </div>
+      <div class="tier highlight">
+        <div style="font-size:26px;">⭐</div>
+        <h3>Премиум</h3>
+        <div><span class="price">299 ₽</span><span class="price-sub"> / мес</span></div>
+        <div style="width:100%;height:1px;background:rgba(255,255,255,0.2);"></div>
+        <ul>
+          <li>Безлимитные документы</li>
+          <li>Неограниченный ИИ</li>
+          <li>Динамика и тренды</li>
+          <li>Ссылки для врачей</li>
+          <li>Трекер беременности</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div style="font-size:26px;">🏥</div>
+        <h3>Клиника</h3>
+        <div><span class="price">от 15 000 ₽</span><span class="price-sub"> / мес</span></div>
+        <div style="width:100%;height:1px;background:var(--gray2);"></div>
+        <ul>
+          <li>Белый лейбл для клиники</li>
+          <li>API интеграция с МИС</li>
+          <li>Выгрузка данных пациентов</li>
+          <li>Аналитика по базе</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bottom-row">
+      <div class="b2b-card">
+        <span class="em">🛒</span>
+        <div><h4>Маркетплейс</h4><p>Комиссия 8–12% за запись к врачам, анализы в лабораториях и доставку лекарств прямо из приложения</p></div>
+      </div>
+      <div class="b2b-card">
+        <span class="em">💊</span>
+        <div><h4>Фармкомпании</h4><p>Таргетированные предложения релевантным пользователям (GDPR-compliant, с согласия пользователя)</p></div>
+      </div>
+      <div class="b2b-card">
+        <span class="em">🔬</span>
+        <div><h4>Лаборатории</h4><p>Партнёрская программа: Гемотест, Инвитро, ЛЦ «Страховая» — прямой заказ анализов из ПУЛЬС</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num slide-num-dark">6 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     СЛАЙД 7 — КОНКУРЕНТЫ
+════════════════════════════════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="inner">
+    <div style="margin-bottom:4px;">
+      <div class="slide-label">Конкурентный анализ</div>
+      <div style="font-size:26px;font-weight:900;color:var(--navy);">ПУЛЬС выигрывает по ключевым параметрам</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Продукт</th>
+          <th>ИИ-расшифровка</th>
+          <th>Ссылка врачу</th>
+          <th>Беременность</th>
+          <th>Прививки</th>
+          <th>Маркетплейс</th>
+          <th>Российский ИИ</th>
+          <th>Цена</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="puls">
+          <td>⭐ ПУЛЬС</td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+          <td class="check">✓ Гигачат</td>
+          <td>Freemium</td>
+        </tr>
+        <tr>
+          <td>Госуслуги / ЕГИСЗ</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td class="part">частично</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td>Бесплатно</td>
+        </tr>
+        <tr>
+          <td>СберЗдоровье</td>
+          <td class="part">частично</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td class="check">✓</td>
+          <td class="cross">—</td>
+          <td>от 299 ₽/мес</td>
+        </tr>
+        <tr>
+          <td>Тесты Онлайн / Helix</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td class="check">✓</td>
+          <td class="cross">—</td>
+          <td>Бесплатно</td>
+        </tr>
+        <tr>
+          <td>Meditrace (зарубеж)</td>
+          <td class="check">✓</td>
+          <td class="check">✓</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td>$9.99/мес</td>
+        </tr>
+        <tr>
+          <td>Яндекс Здоровье</td>
+          <td class="part">частично</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td class="cross">—</td>
+          <td class="check">✓</td>
+          <td class="part">YandexGPT</td>
+          <td>Freemium</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="display:flex;gap:20px;padding:10px 0 0;font-size:10px;color:var(--muted);">
+      <span><span class="check">✓</span> Есть полностью</span>
+      <span><span class="part">◑</span> Частично / ограничено</span>
+      <span><span class="cross">—</span> Отсутствует</span>
+      <span style="margin-left:auto;font-style:italic;">ПУЛЬС — единственный продукт, объединяющий все 7 функций</span>
+    </div>
+  </div>
+  <div class="slide-num slide-num-dark">7 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     СЛАЙД 8 — ROADMAP
+════════════════════════════════════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="inner">
+    <div>
+      <div class="tag tag-navy" style="margin-bottom:8px;">Дорожная карта</div>
+      <div style="font-size:26px;font-weight:900;color:white;line-height:1.1;">
+        От MVP к лидеру рынка за 3 года
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="phase done" style="padding-right:20px;">
+        <div class="phase-head">
+          <div class="phase-dot"></div>
+          <div class="phase-date">Q1–Q2 2026</div>
+        </div>
+        <div class="phase-title">MVP ✅</div>
+        <ul>
+          <li>Медкарта и загрузка документов</li>
+          <li>ИИ-ассистент на Гигачате</li>
+          <li>Прививочная книжка (НК РФ)</li>
+          <li>Трекер беременности (40 нед.)</li>
+          <li>Менструальный календарь</li>
+          <li>Ссылка для врача</li>
+          <li>Справочник болезней</li>
+          <li>Маркетплейс (каталог)</li>
+          <li>iOS · Android · Web</li>
+        </ul>
+      </div>
+      <div class="phase now" style="padding-left:20px;padding-right:20px;">
+        <div class="phase-head">
+          <div class="phase-dot"></div>
+          <div class="phase-date">Q3–Q4 2026</div>
+        </div>
+        <div class="phase-title">Рост 🚀</div>
+        <ul>
+          <li>Запуск App Store / Google Play</li>
+          <li>Платная подписка Премиум</li>
+          <li>Распознавание фото анализов (OCR)</li>
+          <li>Уведомления о визитах и приёме лекарств</li>
+          <li>Интеграция с Гемотест, Инвитро</li>
+          <li>СНИЛС-авторизация (Госуслуги OAuth)</li>
+          <li>10 000 MAU цель</li>
+        </ul>
+      </div>
+      <div class="phase next" style="padding-left:20px;padding-right:20px;">
+        <div class="phase-head">
+          <div class="phase-dot"></div>
+          <div class="phase-date">2027</div>
+        </div>
+        <div class="phase-title">Масштаб 📈</div>
+        <ul>
+          <li>B2B API для клиник и МИС</li>
+          <li>Интеграция с ЕГИСЗ / СЗПЗ</li>
+          <li>Телемедицина внутри приложения</li>
+          <li>Страховые партнёрства</li>
+          <li>Казахстан, Беларусь</li>
+          <li>100 000 MAU цель</li>
+        </ul>
+      </div>
+      <div class="phase far" style="padding-left:20px;">
+        <div class="phase-head">
+          <div class="phase-dot"></div>
+          <div class="phase-date">2028+</div>
+        </div>
+        <div class="phase-title">Лидерство 👑</div>
+        <ul>
+          <li>ИИ-диагностика по симптомам</li>
+          <li>Собственная лаборатория данных</li>
+          <li>White-label для регионов</li>
+          <li>Экспорт в СНГ (5 стран)</li>
+          <li>500 000+ MAU</li>
+          <li>Выход на прибыль</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">8 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     СЛАЙД 9 — КОМАНДА
+════════════════════════════════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="inner">
+    <div>
+      <div class="slide-label">Команда</div>
+      <div style="font-size:26px;font-weight:900;color:var(--navy);">Профессионалы с опытом в HealthTech</div>
+    </div>
+    <div class="team-grid">
+      <div class="member">
+        <div class="avatar" style="background:var(--teal);">ЮХ</div>
+        <h3>Юрий Хелп</h3>
+        <div class="role">CEO · Основатель</div>
+        <p>Визионер продукта, стратегия развития, партнёрства с клиниками и инвесторами</p>
+      </div>
+      <div class="member">
+        <div class="avatar" style="background:var(--accent);">РФ</div>
+        <h3>CTO</h3>
+        <div class="role">Технический директор</div>
+        <p>Архитектура платформы, React Native, FastAPI, интеграции с медицинскими системами</p>
+      </div>
+      <div class="member">
+        <div class="avatar" style="background:var(--orange);">МД</div>
+        <h3>Медицинский советник</h3>
+        <div class="role">Chief Medical Officer</div>
+        <p>Врач-терапевт, валидация медицинского контента, стандарты оказания помощи</p>
+      </div>
+      <div class="member">
+        <div class="avatar" style="background:var(--green);">МК</div>
+        <h3>Head of Growth</h3>
+        <div class="role">Маркетинг и рост</div>
+        <p>Привлечение пользователей, партнёрства с лабораториями и страховыми компаниями</p>
+      </div>
+    </div>
+    <div class="advisors">
+      <span style="font-size:24px;">🤝</span>
+      <p><strong>Ищем в команду:</strong> Data Scientist (ML для анализа трендов здоровья), iOS/Android-разработчик (нативные фичи), Head of Sales B2B (клиники и страховые). Открыты к стратегическим партнёрствам с медицинскими организациями.</p>
+    </div>
+  </div>
+  <div class="slide-num slide-num-dark">9 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     СЛАЙД 10 — ИНВЕСТИЦИИ
+════════════════════════════════════════════════════════════ -->
+<div class="slide" id="s10">
+  <div class="inner">
+    <div class="left">
+      <div class="tag tag-navy" style="margin-bottom:14px;">Инвестиционное предложение</div>
+      <h2>Seed Round<br>2026</h2>
+      <div class="ask-amount">₽30 млн</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.45);margin-top:4px;margin-bottom:18px;">
+        Оценка компании: ₽150 млн (pre-money) · 20% equity
+      </div>
+      <div class="use-of-funds">
+        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;">Использование средств</div>
+        <div class="fund-row">
+          <span class="fund-label">Разработка и инфраструктура</span>
+          <div class="fund-bar-wrap"><div class="fund-bar" style="width:40%;"></div></div>
+          <span class="fund-pct">40%</span>
+        </div>
+        <div class="fund-row">
+          <span class="fund-label">Маркетинг и привлечение</span>
+          <div class="fund-bar-wrap"><div class="fund-bar" style="width:30%;"></div></div>
+          <span class="fund-pct">30%</span>
+        </div>
+        <div class="fund-row">
+          <span class="fund-label">Команда (найм)</span>
+          <div class="fund-bar-wrap"><div class="fund-bar" style="width:20%;"></div></div>
+          <span class="fund-pct">20%</span>
+        </div>
+        <div class="fund-row">
+          <span class="fund-label">Юридическое и операционное</span>
+          <div class="fund-bar-wrap"><div class="fund-bar" style="width:10%;"></div></div>
+          <span class="fund-pct">10%</span>
+        </div>
+      </div>
+    </div>
+    <div class="right">
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;">Прогноз KPI</div>
+      <div class="kpi-card">
+        <div class="year">2026 — запуск</div>
+        <div class="kpi-row"><span class="k">MAU</span><span class="v">5 000</span></div>
+        <div class="kpi-row"><span class="k">Платящих</span><span class="v">500</span></div>
+        <div class="kpi-row"><span class="k">MRR</span><span class="v">₽150 тыс</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="year">2027 — рост</div>
+        <div class="kpi-row"><span class="k">MAU</span><span class="v">50 000</span></div>
+        <div class="kpi-row"><span class="k">Платящих</span><span class="v">8 000</span></div>
+        <div class="kpi-row"><span class="k">MRR</span><span class="v">₽2.4 млн</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="year">2028 — масштаб</div>
+        <div class="kpi-row"><span class="k">MAU</span><span class="v">300 000</span></div>
+        <div class="kpi-row"><span class="k">Платящих</span><span class="v">60 000</span></div>
+        <div class="kpi-row"><span class="k">ARR</span><span class="v">₽250 млн</span></div>
+      </div>
+      <div style="background:rgba(13,148,136,0.2);border:1px solid rgba(13,148,136,0.3);border-radius:12px;padding:12px 14px;">
+        <div style="font-size:10px;color:rgba(255,255,255,0.45);margin-bottom:4px;">ROI для инвестора</div>
+        <div style="font-size:20px;font-weight:900;color:var(--teal);">×8–12 за 3 года</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:2px;">при оценке ₽1.2–1.8 млрд на Series A</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">10 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     СЛАЙД 11 — КОНТАКТЫ
+════════════════════════════════════════════════════════════ -->
+<div class="slide" id="s11">
+  <div class="inner">
+    <div style="font-size:13px;color:rgba(255,255,255,0.6);font-weight:500;letter-spacing:2px;text-transform:uppercase;">Давайте обсудим</div>
+    <h1>ПУЛЬС</h1>
+    <div class="tagline">Единая медицинская книжка для России и СНГ</div>
+    <div style="width:60px;height:3px;background:rgba(255,255,255,0.3);border-radius:2px;margin:4px 0;"></div>
+    <div class="contacts">
+      <div class="contact">
+        <span class="ic">📧</span>
+        <span class="val">hello@puls.app</span>
+        <span class="lbl">Email</span>
+      </div>
+      <div class="divider-h"></div>
+      <div class="contact">
+        <span class="ic">📱</span>
+        <span class="val">@puls_app</span>
+        <span class="lbl">Telegram</span>
+      </div>
+      <div class="divider-h"></div>
+      <div class="contact">
+        <span class="ic">🌐</span>
+        <span class="val">puls.app</span>
+        <span class="lbl">Сайт</span>
+      </div>
+      <div class="divider-h"></div>
+      <div class="contact">
+        <span class="ic">📍</span>
+        <span class="val">Москва, Россия</span>
+        <span class="lbl">Офис</span>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:11px;color:rgba(255,255,255,0.35);">
+      Демо-версия доступна по запросу · Конфиденциально
+    </div>
+  </div>
+</div>
+
+</div><!-- /slides-wrap -->
+
+<script>
+  // Keyboard shortcut: Ctrl+P = print
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+      e.preventDefault();
+      window.print();
+    }
+  });
+</script>
+</body>
+</html>

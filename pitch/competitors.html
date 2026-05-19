@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ПУЛЬС — Конкурентный анализ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #0d9488;
+    --teal-light: #14b8a6;
+    --teal-bg: #f0fdfa;
+    --navy: #0f172a;
+    --slate: #334155;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --red: #ef4444;
+    --orange: #f97316;
+    --yellow: #eab308;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f8fafc;
+    color: var(--navy);
+    line-height: 1.6;
+  }
+
+  .print-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 100;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 2px 12px rgba(13,148,136,0.3);
+  }
+  .print-btn:hover { background: var(--teal-light); }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding: 40px 32px;
+    background: var(--navy);
+    border-radius: 16px;
+    color: white;
+  }
+  .header .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .header .logo-dot {
+    width: 36px; height: 36px;
+    background: var(--teal);
+    border-radius: 50%;
+  }
+  .header .logo-text {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 2px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 8px;
+  }
+  .header .subtitle {
+    font-size: 14px;
+    color: #64748b;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 40px;
+  }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+  }
+  .section-title .badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-red    { background: #fef2f2; color: #dc2626; }
+  .badge-orange { background: #fff7ed; color: #ea580c; }
+  .badge-yellow { background: #fefce8; color: #ca8a04; }
+  .badge-green  { background: #f0fdf4; color: #16a34a; }
+  .badge-blue   { background: #eff6ff; color: #2563eb; }
+  .badge-purple { background: #faf5ff; color: #7c3aed; }
+  .badge-teal   { background: var(--teal-bg); color: var(--teal); }
+
+  /* Table */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  thead th {
+    background: var(--navy);
+    color: white;
+    padding: 12px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  thead th:first-child { border-radius: 0; }
+  tbody tr:nth-child(even) { background: #f8fafc; }
+  tbody tr:hover { background: var(--teal-bg); }
+  tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .product-name {
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .product-url {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    margin: 1px 2px 1px 0;
+  }
+  .tag-green  { background: #f0fdf4; color: #16a34a; }
+  .tag-red    { background: #fef2f2; color: #dc2626; }
+  .tag-blue   { background: #eff6ff; color: #2563eb; }
+  .tag-teal   { background: var(--teal-bg); color: var(--teal); }
+  .tag-gray   { background: #f1f5f9; color: var(--muted); }
+  .tag-orange { background: #fff7ed; color: #ea580c; }
+
+  /* Threat indicator */
+  .threat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .threat-high   { background: #fef2f2; color: #dc2626; }
+  .threat-mid    { background: #fff7ed; color: #ea580c; }
+  .threat-low    { background: #f0fdf4; color: #16a34a; }
+
+  /* Feature matrix */
+  .matrix-wrap {
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .matrix-wrap table { font-size: 12.5px; }
+  .matrix-wrap thead th {
+    background: var(--navy);
+    padding: 10px 12px;
+    text-align: center;
+    font-size: 11px;
+  }
+  .matrix-wrap thead th:first-child { text-align: left; }
+  .matrix-wrap tbody td {
+    padding: 10px 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .matrix-wrap tbody td:first-child {
+    text-align: left;
+    font-weight: 500;
+    color: var(--slate);
+  }
+  .matrix-wrap tbody tr.highlight { background: var(--teal-bg); }
+  .matrix-wrap tbody tr.highlight td:first-child {
+    color: var(--teal);
+    font-weight: 700;
+  }
+  .check { color: #22c55e; font-size: 16px; }
+  .cross { color: #e2e8f0; font-size: 16px; }
+  .partial { color: #f97316; font-size: 14px; font-weight: 700; }
+
+  /* Insight cards */
+  .insights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .insight-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .insight-card .icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .insight-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .insight-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .insight-card.opportunity { border-left: 4px solid var(--teal); }
+  .insight-card.risk        { border-left: 4px solid #ef4444; }
+  .insight-card.watch       { border-left: 4px solid #f97316; }
+
+  /* Positioning map */
+  .map-section {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .map-grid {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+    height: 340px;
+    margin: 24px auto 0;
+    border-left: 2px solid #cbd5e1;
+    border-bottom: 2px solid #cbd5e1;
+  }
+  .axis-label {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .axis-x-left  { bottom: -28px; left: 0; }
+  .axis-x-right { bottom: -28px; right: 0; }
+  .axis-y-bottom { top: auto; bottom: 0; left: -70px; transform: rotate(-90deg) translateX(50%); transform-origin: left center; }
+  .axis-y-top    { top: 0; left: -70px; transform: rotate(-90deg) translateX(50%); transform-origin: left center; }
+  .map-dot {
+    position: absolute;
+    transform: translate(-50%, 50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .dot-circle {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .dot-label {
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    background: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  @media print {
+    .print-btn { display: none; }
+    body { background: white; }
+    .container { padding: 20px; }
+    .section { page-break-inside: avoid; }
+    a { text-decoration: none; color: inherit; }
+  }
+</style>
+</head>
+<body>
+<button class="print-btn" onclick="window.print()">⬇ Сохранить PDF</button>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      <div class="logo-text">ПУЛЬС</div>
+    </div>
+    <h1>Конкурентный анализ рынка</h1>
+    <p class="subtitle">Личные медкарты, ИИ-здоровье, телемедицина — Россия / СНГ &nbsp;·&nbsp; Май 2026</p>
+  </div>
+
+  <!-- 1. ПРЯМЫЕ КОНКУРЕНТЫ -->
+  <div class="section">
+    <div class="section-title">
+      <span>🔴</span> Прямые конкуренты — Личная медкарта (PHR)
+      <span class="badge badge-red">Высокий приоритет</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:180px">Продукт</th>
+            <th>Суть</th>
+            <th>Сильные стороны</th>
+            <th>Слабые стороны</th>
+            <th style="width:100px">Угроза</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="product-name">Медточка</div>
+              <div class="product-url">medtochka.ru</div>
+            </td>
+            <td>Личная медкарта, хранение документов, история болезней, доступ родственникам</td>
+            <td>
+              <span class="tag tag-green">Давно на рынке</span>
+              <span class="tag tag-green">SEO-трафик</span>
+              <span class="tag tag-blue">Веб + iOS + Android</span>
+              <span class="tag tag-green">Семейный профиль</span>
+            </td>
+            <td>
+              <span class="tag tag-red">Устаревший UX</span>
+              <span class="tag tag-red">Нет ИИ</span>
+              <span class="tag tag-red">Нет цикла/беременности</span>
+              <span class="tag tag-red">Нет врачебной ссылки</span>
+            </td>
+            <td><span class="threat threat-high">● Высокая</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="product-name">MedJournal</div>
+              <div class="product-url">iOS / Android</div>
+            </td>
+            <td>Дневник самочувствия, трекинг давления / глюкозы / веса, напоминания о лекарствах</td>
+            <td>
+              <span class="tag tag-green">Простой UX</span>
+              <span class="tag tag-green">Трекинг показателей</span>
+              <span class="tag tag-blue">Графики динамики</span>
+            </td>
+            <td>
+              <span class="tag tag-red">Нет хранения документов</span>
+              <span class="tag tag-red">Нет ИИ-анализа</span>
+              <span class="tag tag-red">Нет врачебного доступа</span>
+              <span class="tag tag-red">Нет аналитики анализов</span>
+            </td>
+            <td><span class="threat threat-mid">● Средняя</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="product-name">iMedCard</div>
+              <div class="product-url">iOS</div>
+            </td>
+            <td>Цифровая медкарта с QR-кодом для экстренного доступа скорой помощи</td>
+            <td>
+              <span class="tag tag-green">QR экстренный доступ</span>
+              <span class="tag tag-green">Минималистичный</span>
+            </td>
+            <td>
+              <span class="tag tag-red">Только iOS</span>
+              <span class="tag tag-red">Нет обновлений</span>
+              <span class="tag tag-red">Минимум функций</span>
+            </td>
+            <td><span class="threat threat-low">● Низкая</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="product-name">Meditrace</div>
+              <div class="product-url">meditrace.ru</div>
+            </td>
+            <td>Агрегация медданных пациента, интеграция с отдельными клиниками и лабораториями</td>
+            <td>
+              <span class="tag tag-green">Интеграция с клиниками</span>
+              <span class="tag tag-blue">B2C + B2B</span>
+            </td>
+            <td>
+              <span class="tag tag-red">Узкий охват интеграций</span>
+              <span class="tag tag-red">Мало пользователей</span>
+              <span class="tag tag-red">Нет ИИ</span>
+            </td>
+            <td><span class="threat threat-mid">● Средняя</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2. ИИ / ВТОРОЕ МНЕНИЕ -->
+  <div class="section">
+    <div class="section-title">
+      <span>🟡</span> ИИ-диагностика и второе мнение
+      <span class="badge badge-yellow">Следить</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:180px">Продукт</th>
+            <th>Суть</th>
+            <th>Сильные стороны</th>
+            <th>Слабые стороны</th>
+            <th style="width:100px">Угроза</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="product-name">Третье мнение</div>
+              <div class="product-url">3mnenie.ru</div>
+            </td>
+            <td>ИИ-анализ снимков (КТ, МРТ, рентген), расшифровка заключений радиологов</td>
+            <td>
+              <span class="tag tag-green">Медицинские снимки</span>
+              <span class="tag tag-green">Сертификация ИИ</span>
+              <span class="tag tag-blue">Расшифровка DICOM</span>
+            </td>
+            <td>
+              <span class="tag tag-red">Только снимки</span>
+              <span class="tag tag-red">Нет хранения истории</span>
+              <span class="tag tag-red">Нет трекинга</span>
+            </td>
+            <td><span class="threat threat-high">● Высокая</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="product-name">СберЗдоровье ИИ</div>
+              <div class="product-url">sberzdorovye.ru</div>
+            </td>
+            <td>Чат-бот по симптомам, расшифровка анализов по фото, телемедицина</td>
+            <td>
+              <span class="tag tag-red">Ресурсы Сбера</span>
+              <span class="tag tag-green">50M+ пользователей</span>
+              <span class="tag tag-blue">GigaChat-интеграция</span>
+            </td>
+            <td>
+              <span class="tag tag-red">Нет единого PHR</span>
+              <span class="tag tag-red">Нет трекинга цикла</span>
+              <span class="tag tag-red">Нет истории болезней</span>
+            </td>
+            <td><span class="threat threat-high">● Высокая</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="product-name">Яндекс Здоровье</div>
+              <div class="product-url">health.yandex.ru</div>
+            </td>
+            <td>Симптом-чекер, расшифровка анализов по фото, запись к врачу</td>
+            <td>
+              <span class="tag tag-red">Аудитория Яндекс</span>
+              <span class="tag tag-green">YandexGPT</span>
+              <span class="tag tag-blue">SEO-монополия</span>
+            </td>
+            <td>
+              <span class="tag tag-red">Нет PHR</span>
+              <span class="tag tag-red">Нет хранения документов</span>
+              <span class="tag tag-red">Нет персональной истории</span>
+            </td>
+            <td><span class="threat threat-high">● Высокая</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="product-name">Budu (Будь здоров)</div>
+              <div class="product-url">budu.med</div>
+            </td>
+            <td>Телемедицина, ИИ-симптом чекер, корпоративное здоровье</td>
+            <td>
+              <span class="tag tag-green">Корпоративный сегмент</span>
+              <span class="tag tag-blue">Хорошее приложение</span>
+            </td>
+            <td>
+              <span class="tag tag-red">Нет PHR</span>
+              <span class="tag tag-red">Нет хранения анализов</span>
+            </td>
+            <td><span class="threat threat-mid">● Средняя</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 3. ТЕЛЕМЕДИЦИНА -->
+  <div class="section">
+    <div class="section-title">
+      <span>🟠</span> Телемедицина и запись к врачу
+      <span class="badge badge-orange">Косвенные</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:180px">Продукт</th>
+            <th>Суть</th>
+            <th>Аудитория / размер</th>
+            <th>Почему косвенный</th>
+            <th style="width:100px">Угроза</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="product-name">СберЗдоровье</div>
+              <div class="product-url">ex-DocDoc</div>
+            </td>
+            <td>Запись к врачу, онлайн-консультации, чекап-программы</td>
+            <td><span class="tag tag-red">50M+ MAU</span></td>
+            <td>Нет единого хранилища истории пациента, нет трекинга</td>
+            <td><span class="threat threat-mid">● Средняя</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="product-name">Доктор рядом</div>
+              <div class="product-url">doctorryadom.ru</div>
+            </td>
+            <td>Телемедицина по подписке, онлайн-консультации 24/7</td>
+            <td><span class="tag tag-orange">3M+ пользователей</span></td>
+            <td>Нет хранения истории болезней, нет ИИ-аналитики анализов</td>
+            <td><span class="threat threat-low">● Низкая</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="product-name">BestDoctor</div>
+              <div class="product-url">bestdoctor.ru</div>
+            </td>
+            <td>Корпоративное ДМС, управление здоровьем сотрудников</td>
+            <td><span class="tag tag-blue">B2B, 800+ компаний</span></td>
+            <td>Только B2B, без персональных данных вне компании</td>
+            <td><span class="threat threat-low">● Низкая</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="product-name">ПроДокторов</div>
+              <div class="product-url">prodoctors.ru</div>
+            </td>
+            <td>Рейтинги врачей, запись к врачу, отзывы</td>
+            <td><span class="tag tag-orange">10M+ MAU</span></td>
+            <td>Не хранит медданные пациента, только запись</td>
+            <td><span class="threat threat-low">● Низкая</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4. ЛАБОРАТОРИИ -->
+  <div class="section">
+    <div class="section-title">
+      <span>🟢</span> Лабораторные приложения
+      <span class="badge badge-green">Изолированные экосистемы</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:180px">Лаборатория</th>
+            <th>Что умеет приложение</th>
+            <th>Почему это возможность для ПУЛЬС</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="product-name">Инвитро</div></td>
+            <td>Просмотр своих анализов Инвитро, история заказов, ближайшие пункты</td>
+            <td rowspan="4" style="vertical-align: middle; background: var(--teal-bg);">
+              <strong style="color: var(--teal)">Ключевая возможность:</strong><br><br>
+              Каждая лаборатория — отдельный силос. Пациент с анализами из Инвитро, Гемотеста и KDL
+              вынужден открывать 3 разных приложения.<br><br>
+              <strong>ПУЛЬС — единственный агрегатор,</strong> который хранит всё в одном месте
+              с ИИ-аналитикой динамики показателей.
+            </td>
+          </tr>
+          <tr>
+            <td><div class="product-name">Гемотест</div></td>
+            <td>Только результаты Гемотест, запись на анализы</td>
+          </tr>
+          <tr>
+            <td><div class="product-name">KDL</div></td>
+            <td>Результаты KDL, онлайн-заказ анализов</td>
+          </tr>
+          <tr>
+            <td><div class="product-name">CMD / Синево</div></td>
+            <td>Результаты CMD, история визитов в центр</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 5. ГОСУДАРСТВЕННЫЕ -->
+  <div class="section">
+    <div class="section-title">
+      <span>🔵</span> Государственные системы
+      <span class="badge badge-blue">Долгосрочный риск</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:180px">Система</th>
+            <th>Суть</th>
+            <th>Текущее состояние</th>
+            <th>Угроза через 3–5 лет</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="product-name">ЕГИСЗ / Госуслуги</div>
+              <div class="product-url">egisz.rosminzdrav.ru</div>
+            </td>
+            <td>Официальная электронная медкарта гражданина, интегруется с гос. поликлиниками</td>
+            <td>
+              <span class="tag tag-gray">Работает в Москве и крупных городах</span>
+              <span class="tag tag-red">UX государственный</span>
+              <span class="tag tag-red">Нет ИИ</span>
+            </td>
+            <td>
+              <span class="threat threat-high">● Высокая</span>
+              <br><small style="color:var(--muted)">Если добавят ИИ + UX</small>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="product-name">ЕМИАС</div>
+              <div class="product-url">emias.info (Москва)</div>
+            </td>
+            <td>Московская система записи и медкарт, интеграция с московскими поликлиниками</td>
+            <td>
+              <span class="tag tag-orange">Только Москва</span>
+              <span class="tag tag-red">Нет экспорта данных</span>
+              <span class="tag tag-red">Нет мобильного приложения полноценного</span>
+            </td>
+            <td><span class="threat threat-mid">● Средняя</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="product-name">МИС (Medods, Infoclinica)</div>
+              <div class="product-url">B2B системы клиник</div>
+            </td>
+            <td>Медицинские информационные системы для клиник — не для пациентов</td>
+            <td>
+              <span class="tag tag-blue">B2B, не B2C</span>
+              <span class="tag tag-gray">Партнёрский канал для ПУЛЬС</span>
+            </td>
+            <td><span class="threat threat-low">● Низкая</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 6. МАТРИЦА ФУНКЦИЙ -->
+  <div class="section">
+    <div class="section-title">
+      <span>📊</span> Матрица функций — ПУЛЬС vs конкуренты
+    </div>
+    <div class="matrix-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:220px; text-align:left">Функция</th>
+            <th style="background: var(--teal)">ПУЛЬС ★</th>
+            <th>Медточка</th>
+            <th>MedJournal</th>
+            <th>СберЗдоровье</th>
+            <th>Яндекс Здоровье</th>
+            <th>Третье мнение</th>
+            <th>ЕГИСЗ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td>Хранение медкарты / документов</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr>
+            <td>ИИ-анализ анализов крови</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr class="highlight">
+            <td>Динамика показателей (тренды)</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>Менструальный календарь</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr class="highlight">
+            <td>Трекинг беременности</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>Ссылка-доступ для врача (без рег.)</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr class="highlight">
+            <td>Российский ИИ (GigaChat / YandexGPT)</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>Вакцинации и прививочный паспорт</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="partial">~</span></td>
+          </tr>
+          <tr class="highlight">
+            <td>Мобильное приложение (iOS + Android)</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+          <tr>
+            <td>Хранение данных на серверах в РФ</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="check">✓</span></td>
+          </tr>
+          <tr class="highlight">
+            <td>Маркетплейс (анализы, чекапы)</td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="partial">~</span></td>
+            <td><span class="cross">✗</span></td>
+            <td><span class="cross">✗</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px; color:var(--muted); margin-top:8px">
+      <span class="check">✓</span> Есть &nbsp;·&nbsp; <span class="partial">~</span> Частично / в разработке &nbsp;·&nbsp; <span class="cross">✗</span> Нет
+    </p>
+  </div>
+
+  <!-- 7. ИНСАЙТЫ -->
+  <div class="section">
+    <div class="section-title">
+      <span>💡</span> Стратегические выводы
+    </div>
+    <div class="insights">
+      <div class="insight-card opportunity">
+        <div class="icon">🎯</div>
+        <h4>Незанятая ниша #1 — Агрегация лабораторий</h4>
+        <p>Инвитро, Гемотест, KDL, CMD — каждый в своём силосе. Пациент с анализами из 3 лаборатории открывает 3 приложения. ПУЛЬС единственный собирает всё в одном месте с ИИ-анализом динамики.</p>
+      </div>
+      <div class="insight-card opportunity">
+        <div class="icon">👩</div>
+        <h4>Незанятая ниша #2 — Женское здоровье + PHR</h4>
+        <p>Ни один прямой конкурент не объединяет: менструальный календарь + трекинг беременности + история анализов + ИИ-ассистент. 54% аудитории рынка — женщины, это недообслуженный сегмент.</p>
+      </div>
+      <div class="insight-card opportunity">
+        <div class="icon">🔗</div>
+        <h4>Незанятая ниша #3 — Ссылка для врача</h4>
+        <p>Ни один конкурент не даёт пациенту сгенерировать ссылку с данными для врача без регистрации. Это viral loop: врач видит удобный интерфейс → советует пациентам → органический рост.</p>
+      </div>
+      <div class="insight-card risk">
+        <div class="icon">⚡</div>
+        <h4>Главный риск — Яндекс или Сбер</h4>
+        <p>Оба могут добавить PHR-модуль за 6–12 месяцев. Защита: быть быстрее, накопить данные пользователей, выстроить B2B (клиники), получить лицензию МИС. Данные — главный ров.</p>
+      </div>
+      <div class="insight-card risk">
+        <div class="icon">🏛</div>
+        <h4>Долгосрочный риск — ЕГИСЗ</h4>
+        <p>Государство через 3–5 лет может обязать все клиники интегрироваться с ЕГИСЗ, создав де-факто гос. монополию. Стратегия: стать приложением поверх ЕГИСЗ (как приложение над гос. данными).</p>
+      </div>
+      <div class="insight-card watch">
+        <div class="icon">🔬</div>
+        <h4>Партнёрская возможность — МИС клиник</h4>
+        <p>Medods, Infoclinica, 1С:Медицина обслуживают тысячи клиник. Интеграция через API → данные пациентов автоматически попадают в ПУЛЬС. B2B2C-стратегия роста без прямых маркетинговых затрат.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. ИТОГ -->
+  <div class="section">
+    <div class="section-title">
+      <span>🏆</span> Позиционирование ПУЛЬС
+    </div>
+    <div style="background: white; border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);">
+      <p style="font-size: 15px; color: var(--slate); line-height: 1.7; margin-bottom: 16px;">
+        ПУЛЬС занимает уникальную позицию на пересечении трёх рынков, которые сейчас разделены:
+      </p>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
+        <div style="text-align: center; padding: 16px; background: #fef2f2; border-radius: 8px;">
+          <div style="font-size: 28px; margin-bottom: 8px;">📁</div>
+          <div style="font-weight: 700; color: #dc2626; font-size: 14px;">PHR</div>
+          <div style="font-size: 12px; color: var(--muted)">Хранение медкарты</div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 4px">Медточка, Meditrace</div>
+        </div>
+        <div style="text-align: center; padding: 16px; background: var(--teal-bg); border-radius: 8px; border: 2px solid var(--teal);">
+          <div style="font-size: 28px; margin-bottom: 8px;">★</div>
+          <div style="font-weight: 800; color: var(--teal); font-size: 14px;">ПУЛЬС</div>
+          <div style="font-size: 12px; color: var(--muted)">PHR + ИИ + Женское здоровье</div>
+          <div style="font-size: 11px; color: var(--teal); margin-top: 4px; font-weight: 600">Уникально</div>
+        </div>
+        <div style="text-align: center; padding: 16px; background: #faf5ff; border-radius: 8px;">
+          <div style="font-size: 28px; margin-bottom: 8px;">🤖</div>
+          <div style="font-weight: 700; color: #7c3aed; font-size: 14px;">ИИ-Здоровье</div>
+          <div style="font-size: 12px; color: var(--muted)">Анализ и советы</div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 4px">Яндекс, Сбер, 3мнение</div>
+        </div>
+      </div>
+      <div style="background: var(--teal-bg); border-left: 4px solid var(--teal); padding: 14px 18px; border-radius: 0 8px 8px 0;">
+        <strong style="color: var(--teal)">Итого:</strong>
+        <span style="color: var(--slate); font-size: 14px;">
+          Ни один игрок не объединяет полный PHR + ИИ-аналитику + женское здоровье + врачебный доступ + российские сервера.
+          Окно возможностей — 12–18 месяцев до появления аналога от Яндекс или Сбер.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    ПУЛЬС — Конкурентный анализ &nbsp;·&nbsp; Май 2026 &nbsp;·&nbsp; Конфиденциально
+  </div>
+
+</div>
+</body>
+</html>
